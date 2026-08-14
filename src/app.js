@@ -1,0 +1,83 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import userRegisterRoutes from "./routes/user-register-routes.js";
+import adminRegisterRoutes from "./routes/admin-register-routes.js";
+import adminAccessRoutes from "./routes/admin-access-route.js";
+import studentAuthenticationRoutes from "./routes/student-authenticaton-route.js";
+import userBookAccessRoutes from "./routes/user-book-access-route.js";
+import notificationRoutes from "./routes/notification-routes.js";
+
+const app = express();
+
+app.disable("x-powered-by");
+
+app.use(
+  helmet()
+);
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+  })
+);
+
+app.use(
+  express.json({
+    limit: "10kb"
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "10kb"
+  })
+);
+
+app.use(cookieParser());
+
+
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "API is healthy"
+  });
+});
+
+// Simple user registration → POST /api/user/register
+app.use(
+  "/api/user",
+  userRegisterRoutes
+);
+
+// Admin registration → POST /api/admin/register
+app.use(
+  "/api/admin",
+  adminRegisterRoutes
+);
+
+// Admin book / issue / return access → /api/admin/access/*
+app.use(
+  "/api/admin/access",
+  adminAccessRoutes
+);
+
+app.use("/api/main/student", studentAuthenticationRoutes);
+
+
+
+app.use("/api/student/access", userBookAccessRoutes);
+
+app.use("/api/student", notificationRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found"
+  });
+});
+
+export default app;
