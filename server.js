@@ -2,12 +2,17 @@ import "dotenv/config";
 
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
-import "./src/config/redis.js";
+import { testRedisConnection } from "./src/config/redis.js";
 import { startExpireReservationsCron } from "./src/cron/expireReservations.js";
 import { startWaitlistQueue } from "./src/queues/waitlist-queue.js";
 
 async function bootstrap() {
   await connectDB();
+
+  const redisOk = await testRedisConnection();
+  if (!redisOk) {
+    throw new Error("Redis connection check failed");
+  }
 
   // Start the in-process waitlist notification queue
   // (concurrency, retries, coalescing).
