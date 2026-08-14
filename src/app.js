@@ -45,7 +45,7 @@ app.get("/health", (req, res) => {
   //   success: true,
   //   message: "API is healthy"
   // });
-  res.send("API is healthy");
+  res.send("<h1>API is healthy</h1>");
 });
 
 // Simple user registration → POST /api/user/register
