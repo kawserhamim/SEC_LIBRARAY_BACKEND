@@ -41,10 +41,11 @@ app.use(cookieParser());
 
 
 app.get("/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "API is healthy"
-  });
+  // res.json({
+  //   success: true,
+  //   message: "API is healthy"
+  // });
+  res.send("API is healthy");
 });
 
 // Simple user registration → POST /api/user/register
