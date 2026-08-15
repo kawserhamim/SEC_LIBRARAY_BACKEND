@@ -16,7 +16,7 @@ import {
     getBooksForAdmin,
     searchBook,
     // student management
-    addStudent,
+    
     deleteStudent,
     getAllStudent,
     searchStudent,
