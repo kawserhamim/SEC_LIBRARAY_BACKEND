@@ -14,6 +14,8 @@ export function authenticateAdmin(req, res, next) {
   try {
     const payload = verifyAuthToken(token);
 
+    console.log("authenticateAdmin: token payload", payload);
+
     if (payload.role !== "admin") {
       return res.status(403).json({
         success: false,
