@@ -59,19 +59,18 @@ export async function createBookAvailableNotification({
 
 // =====================================================
 // TRIGGER WAITLIST AVAILABILITY FOR A BOOK
-// When N copies of a book become available, this finds
-// the N oldest active waitlisters for that book (FIFO),
-// creates a Notification row for each of them, and
-// DELETES those waitlist rows (they have been served).
-// Remaining active waitlisters stay in the waitlist for
-// a future availability event.
+// When a book becomes available (regardless of how
+// many copies), this finds EVERY active waitlister
+// for that book, creates a Notification row for each
+// of them, and DELETES those waitlist rows (they have
+// been served).
 //
 // Safe to call whenever copies become available
 // (cron expiry, admin return, admin adds copies, etc.).
 //
-// If `availableCopies` is greater than the number of
-// active waitlisters, every active waitlister is
-// notified and their rows are deleted.
+// `availableCopies` is kept in the signature for
+// backward compatibility but is no longer used to
+// cap the number of users notified.
 // =====================================================
 
 export async function triggerWaitlistAvailability(
@@ -81,11 +80,10 @@ export async function triggerWaitlistAvailability(
   if (!bookId) return null;
 
   // ---------------------------------------------
-  // Pick the N oldest active waitlist entries
-  // (FIFO). If fewer than N wait, take all of them.
+  // Pick EVERY active, unnotified waitlist entry
+  // for this book. No cap based on copy count — if
+  // the book is available, every waitlister is told.
   // ---------------------------------------------
-
-  const limit = Math.max(1, Number(availableCopies) || 1);
 
   const pickedEntries = await Waitlist.find({
     book: bookId,
@@ -93,7 +91,6 @@ export async function triggerWaitlistAvailability(
     notified: false,
   })
     .sort({ createdAt: 1 })
-    .limit(limit)
     .lean();
 
   if (pickedEntries.length === 0) {
