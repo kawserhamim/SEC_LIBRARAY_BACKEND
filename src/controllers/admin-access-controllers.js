@@ -1009,18 +1009,47 @@ export const getAllReservation = async (req, res) => {
 };
 
 // =====================================================
-// DASHBOARD STATS
-// GET /api/admin/access/stats
-// Counts everything the admin dashboard needs:
-//   - registered users
-//   - book titles + total / available / issued copies
-//   - currently issued books (borrowed + overdue)
-//   - lifetime returned books
-//   - active and expired reservations
+// DASHBOARD STATS (split into separate endpoints)
+// The admin dashboard now hits four endpoints:
+//   GET /api/admin/access/stats/users
+//   GET /api/admin/access/stats/books
+//   GET /api/admin/access/stats/issued
+//   GET /api/admin/access/stats/reservations
+// Each one returns a focused payload so the front-end
+// can fetch and refresh sections independently.
 // =====================================================
-export const getDashboardStats = async (req, res) => {
+
+// GET /api/admin/access/stats/users
+// Total registered users (all roles) and just students.
+export const getUserStats = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
+        const totalStudents = await User.countDocuments({ role: "user" });
+
+        return res.status(200).json({
+            success: true,
+            message: "User stats fetched successfully",
+            data: {
+                totalUsers,
+                totalStudents,
+            },
+        });
+    } catch (error) {
+        console.error("getUserStats error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching user stats",
+            error: error.message,
+        });
+    }
+};
+
+
+// GET /api/admin/access/stats/books
+// Total book titles + aggregate copies
+// (total, available, issued).
+export const getBookStats = async (req, res) => {
+    try {
         const totalBookTitles = await Book.countDocuments();
 
         const books = await Book.find().select("totalCopies availableCopies").lean();
@@ -1033,43 +1062,91 @@ export const getDashboardStats = async (req, res) => {
         }
         const issuedCopies = Math.max(totalCopies - availableCopies, 0);
 
+        return res.status(200).json({
+            success: true,
+            message: "Book stats fetched successfully",
+            data: {
+                totalBookTitles,
+                totalCopies,
+                availableCopies,
+                issuedCopies,
+            },
+        });
+    } catch (error) {
+        console.error("getBookStats error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching book stats",
+            error: error.message,
+        });
+    }
+};
+
+
+// GET /api/admin/access/stats/issued
+// Currently active issues (borrowed + overdue)
+// plus lifetime returned count.
+export const getIssueStats = async (req, res) => {
+    try {
         const activeIssued = await IssuedBook.countDocuments({
             status: { $in: ["borrowed", "overdue"] },
         });
         const totalReturned = await IssuedBook.countDocuments({
             status: "returned",
         });
+        const totalIssued = activeIssued + totalReturned;
 
+        return res.status(200).json({
+            success: true,
+            message: "Issue stats fetched successfully",
+            data: {
+                totalIssued,
+                activeIssued,
+                totalReturned,
+            },
+        });
+    } catch (error) {
+        console.error("getIssueStats error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching issue stats",
+            error: error.message,
+        });
+    }
+};
+
+
+// GET /api/admin/access/stats/reservations
+// Active vs expired reservations, with lifetime total.
+export const getReservationStats = async (req, res) => {
+    try {
         const activeReservations = await ReserveBook.countDocuments({
             status: "pending",
         });
         const expiredReservations = await ReserveBook.countDocuments({
             status: "expired",
         });
+        const issuedReservations = await ReserveBook.countDocuments({
+            status: "issued",
+        });
+        const totalReservations =
+            activeReservations + expiredReservations + issuedReservations;
 
         return res.status(200).json({
             success: true,
-            message: "Dashboard stats fetched successfully",
+            message: "Reservation stats fetched successfully",
             data: {
-                users: { total: totalUsers },
-                books: {
-                    titles: totalBookTitles,
-                    totalCopies,
-                    availableCopies,
-                    issuedCopies,
-                },
-                issued: { active: activeIssued, returned: totalReturned },
-                reservations: {
-                    active: activeReservations,
-                    expired: expiredReservations,
-                },
+                totalReservations,
+                activeReservations,
+                expiredReservations,
+                issuedReservations,
             },
         });
     } catch (error) {
-        console.error("getDashboardStats error:", error);
+        console.error("getReservationStats error:", error);
         return res.status(500).json({
             success: false,
-            message: "Error fetching dashboard stats",
+            message: "Error fetching reservation stats",
             error: error.message,
         });
     }

@@ -28,7 +28,10 @@ import {
     getIssuedBook,
     getAllReservation,
     // dashboard
-    getDashboardStats,
+    getUserStats,
+    getBookStats,
+    getIssueStats,
+    getReservationStats,
 } from "../controllers/admin-access-controllers.js";
 
 import { authenticateAdmin } from "../middlewares/admin-middleware.js";
@@ -81,8 +84,15 @@ router.post(
 router.get("/issued", getIssuedBook);                 // list issued books
 router.get("/reservations", getAllReservation);       // list reservations
 
-// DASHBOARD
-router.get("/stats", getDashboardStats);              // counts for the admin dashboard
+// DASHBOARD (split into four focused endpoints)
+//   GET /stats/users         -> user counts
+//   GET /stats/books         -> book counts
+//   GET /stats/issued        -> issue counts
+//   GET /stats/reservations  -> reservation counts
+router.get("/stats/users", getUserStats);
+router.get("/stats/books", getBookStats);
+router.get("/stats/issued", getIssueStats);
+router.get("/stats/reservations", getReservationStats);
 
 
 export default router;
