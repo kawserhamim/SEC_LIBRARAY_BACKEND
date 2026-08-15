@@ -92,7 +92,7 @@ const reserveBookSchema = new mongoose.Schema(
       default: function () {
         return new Date(
           this.reservedAt.getTime() +
-            RESERVATION_DURATION_HOURS * 60 * 60 * 1000,
+            RESERVATION_DURATION_HOURS * 60 * 1000,
         );
       },
       index: true,
