@@ -16,7 +16,7 @@ export async function createBookAvailableNotification({
   userName,
   userRegNo,
   userDepartment,
-  userSeason,
+  userSession,
 }) {
   // ---------------------------------------------
   // Load book snapshot (so the notification has a
@@ -51,7 +51,7 @@ export async function createBookAvailableNotification({
     userName: userName ?? null,
     userRegNo: userRegNo ?? null,
     userDepartment: userDepartment ?? null,
-    userSeason: userSeason ?? null,
+    userSession: userSession ?? null,
     read: false,
   });
 }
@@ -116,7 +116,7 @@ export async function triggerWaitlistAvailability(
         userName: entry.name,
         userRegNo: entry.regNo,
         userDepartment: entry.department,
-        userSeason: entry.season,
+        userSession: entry.Session,
       }),
     ),
   );

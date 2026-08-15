@@ -28,7 +28,7 @@ export async function authenticate(req, res, next) {
 
   try {
     const user = await User.findById(payload.id)
-      .select("name regNo email phone department season role fine")
+      .select("name regNo email phone department Session role fine")
       .lean();
 
     if (!user) {
@@ -55,7 +55,7 @@ export async function authenticate(req, res, next) {
       email: user.email,
       phone: user.phone,
       department: user.department,
-      season: user.season,
+      Session: user.Session,
       role: user.role || "user",
       fine: user.fine ?? 0,
     };

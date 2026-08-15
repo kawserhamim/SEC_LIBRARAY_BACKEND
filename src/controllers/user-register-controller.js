@@ -16,7 +16,7 @@ function publicUser(user) {
     email: user.email,
     phone: user.phone,
     department: user.department,
-    season: user.season,
+    Session: user.Session,
     gender: user.gender,
     role: user.role,
     fine: user.fine,

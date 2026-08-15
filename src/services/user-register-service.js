@@ -38,7 +38,7 @@ export async function registerUser(data) {
     phone: data.phone,
     password: passwordHash,
     department: data.department,
-    season: data.season,
+    Session: data.Session,
     gender: data.gender,
     role: "user",
   });

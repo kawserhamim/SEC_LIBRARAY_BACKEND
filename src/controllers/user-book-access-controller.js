@@ -111,7 +111,7 @@ export const getBooksForStudent = async (req, res) => {
         name: req.user.name,
         regNo: req.user.regNo,
         department: req.user.department,
-        season: req.user.season,
+        Session: req.user.Session,
       },
 
       data: books,
@@ -307,7 +307,7 @@ export const reserveBook = async (req, res) => {
 
         user_department: user.department,
 
-        user_season: user.season,
+        user_Session: user.Session,
 
         status: "pending",
 
@@ -351,8 +351,8 @@ export const reserveBook = async (req, res) => {
           department:
             reservation.user_department,
 
-          season:
-            reservation.user_season,
+          Session:
+            reservation.user_Session,
         },
 
         status:
@@ -460,7 +460,7 @@ export const joinWaitlist = async (req, res) => {
 
       department: user.department,
 
-      season: user.season,
+      Session: user.Session,
 
       // Book snapshot
       bookTitle: book.title,
@@ -507,8 +507,8 @@ export const joinWaitlist = async (req, res) => {
           department:
             waitlist.department,
 
-          season:
-            waitlist.season,
+          Session:
+            waitlist.Session,
         },
 
         notified:

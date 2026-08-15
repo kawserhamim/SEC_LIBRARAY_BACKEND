@@ -87,7 +87,7 @@ const issuedBookSchema = new mongoose.Schema(
             trim: true,
         },
 
-        userSeason: {
+        userSession: {
             type: String,
             required: true,
             trim: true,

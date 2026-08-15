@@ -49,7 +49,7 @@ const waitlistSchema = new mongoose.Schema(
       trim: true,
     },
 
-    season: {
+    Session: {
       type: String,
       required: true,
       trim: true,

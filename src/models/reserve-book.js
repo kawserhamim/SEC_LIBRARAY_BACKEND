@@ -55,7 +55,7 @@ const reserveBookSchema = new mongoose.Schema(
       trim: true,
     },
 
-    user_season: {
+    user_Session: {
       type: String,
       required: true,
       trim: true,

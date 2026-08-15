@@ -35,7 +35,7 @@ const notificationSchema = new mongoose.Schema(
       trim: true,
     },
 
-    userSeason: {
+    userSession: {
       type: String,
       default: null,
       trim: true,

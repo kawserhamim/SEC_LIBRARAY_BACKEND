@@ -28,7 +28,7 @@ const studentAuthenticationSchema = new mongoose.Schema({
         required: true,
     },
 
-    season: {
+    Session: {
         type: String,
         required: true,
         trim: true,

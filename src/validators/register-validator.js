@@ -40,7 +40,7 @@ export const registerUserSchema = z.object({
     .min(1)
     .max(100),
 
-  season: z
+  Session: z
     .string()
     .trim()
     .min(1)

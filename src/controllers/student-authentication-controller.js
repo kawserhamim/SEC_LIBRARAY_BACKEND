@@ -4,13 +4,13 @@ import TemporaryRegNo from '../models/TemporaryRegNo.js';
 
 export const createStudentAuthentication = async (req, res) => {
     try {
-        const { name, gmail, regNo, gender, season, department } = req.body;
+        const { name, gmail, regNo, gender, Session, department } = req.body;
 
 
 
 
 
-        if (!name || !gmail || !regNo || !gender || !season || !department) {
+        if (!name || !gmail || !regNo || !gender || !Session || !department) {
             return res.status(400).json({
                 success: false,
                 message: 'All fields are required'
@@ -48,7 +48,7 @@ export const createStudentAuthentication = async (req, res) => {
             gmail,
             regNo,
             gender,
-            season,
+            Session,
             department
         });
 
