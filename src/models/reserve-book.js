@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const RESERVATION_DURATION_HOURS = 2;
+const RESERVATION_DURATION_MINUTES = 2;
 
 const reserveBookSchema = new mongoose.Schema(
   {
@@ -71,6 +71,7 @@ const reserveBookSchema = new mongoose.Schema(
         `RB-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
     },
 
+    // Reservation status
     status: {
       type: String,
       enum: ["pending", "issued", "expired"],
@@ -85,14 +86,14 @@ const reserveBookSchema = new mongoose.Schema(
       immutable: true,
     },
 
-    // Automatically expires after 2 hours
+    // Automatically expires after 2 minutes
     expiresAt: {
       type: Date,
       required: true,
       default: function () {
         return new Date(
           this.reservedAt.getTime() +
-            RESERVATION_DURATION_HOURS * 60 * 1000,
+            RESERVATION_DURATION_MINUTES * 60 * 1000
         );
       },
       index: true,
@@ -100,7 +101,7 @@ const reserveBookSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // User's reservations
@@ -124,5 +125,5 @@ reserveBookSchema.index({
 
 export const ReserveBook = mongoose.model(
   "ReservedBook",
-  reserveBookSchema,
+  reserveBookSchema
 );
