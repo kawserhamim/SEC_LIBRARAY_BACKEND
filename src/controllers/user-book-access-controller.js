@@ -315,7 +315,7 @@ export const reserveBook = async (req, res) => {
 
         // 2 hours
         expiresAt: new Date(
-          Date.now() + 2 * 60 * 60 * 1000,
+          Date.now() + 2 * 60 * 1000,
         ),
       });
 
