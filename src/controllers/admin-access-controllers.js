@@ -1007,3 +1007,70 @@ export const getAllReservation = async (req, res) => {
         });
     }
 };
+
+// =====================================================
+// DASHBOARD STATS
+// GET /api/admin/access/stats
+// Counts everything the admin dashboard needs:
+//   - registered users
+//   - book titles + total / available / issued copies
+//   - currently issued books (borrowed + overdue)
+//   - lifetime returned books
+//   - active and expired reservations
+// =====================================================
+export const getDashboardStats = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const totalBookTitles = await Book.countDocuments();
+
+        const books = await Book.find().select("totalCopies availableCopies").lean();
+
+        let totalCopies = 0;
+        let availableCopies = 0;
+        for (const book of books) {
+            totalCopies += book.totalCopies;
+            availableCopies += book.availableCopies;
+        }
+        const issuedCopies = Math.max(totalCopies - availableCopies, 0);
+
+        const activeIssued = await IssuedBook.countDocuments({
+            status: { $in: ["borrowed", "overdue"] },
+        });
+        const totalReturned = await IssuedBook.countDocuments({
+            status: "returned",
+        });
+
+        const activeReservations = await ReserveBook.countDocuments({
+            status: "pending",
+        });
+        const expiredReservations = await ReserveBook.countDocuments({
+            status: "expired",
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Dashboard stats fetched successfully",
+            data: {
+                users: { total: totalUsers },
+                books: {
+                    titles: totalBookTitles,
+                    totalCopies,
+                    availableCopies,
+                    issuedCopies,
+                },
+                issued: { active: activeIssued, returned: totalReturned },
+                reservations: {
+                    active: activeReservations,
+                    expired: expiredReservations,
+                },
+            },
+        });
+    } catch (error) {
+        console.error("getDashboardStats error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching dashboard stats",
+            error: error.message,
+        });
+    }
+};

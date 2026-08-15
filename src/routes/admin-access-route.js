@@ -16,7 +16,7 @@ import {
     getBooksForAdmin,
     searchBook,
     // student management
-    
+
     deleteStudent,
     getAllStudent,
     searchStudent,
@@ -27,6 +27,8 @@ import {
     // reporting
     getIssuedBook,
     getAllReservation,
+    // dashboard
+    getDashboardStats,
 } from "../controllers/admin-access-controllers.js";
 
 import { authenticateAdmin } from "../middlewares/admin-middleware.js";
@@ -78,6 +80,9 @@ router.post(
 // REPORTING
 router.get("/issued", getIssuedBook);                 // list issued books
 router.get("/reservations", getAllReservation);       // list reservations
+
+// DASHBOARD
+router.get("/stats", getDashboardStats);              // counts for the admin dashboard
 
 
 export default router;

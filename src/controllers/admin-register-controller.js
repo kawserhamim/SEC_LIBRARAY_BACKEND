@@ -81,6 +81,30 @@ export const loginAdminHandler = async (req, res) => {
   }
 };
 
+
+export const me = async (req, res) => {
+  try {
+    const admin = req.admin; // Attached by the `loadAdmin` middleware
+
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin details fetched successfully",
+      data: { admin: publicAdmin(admin) },
+    });
+  } catch (error) {
+    console.error("me: failed to return admin details", error);
+    return handleError(res, error, "fetch admin details");
+  }
+};
+
+
 export const logoutAdminHandler = async (req, res) => {
   try {
     clearAuthCookie(res);
