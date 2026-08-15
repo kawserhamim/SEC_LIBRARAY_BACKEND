@@ -129,7 +129,7 @@ const issuedBookSchema = new mongoose.Schema(
         // Optional reservation
         reservation: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Reservation",
+            ref: "ReservedBook",
             default: null,
             index: true,
         },
