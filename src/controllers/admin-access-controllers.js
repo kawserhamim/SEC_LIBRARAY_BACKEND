@@ -258,6 +258,7 @@ export const updateBook = async (req, res) => {
         // invariant: availableCopies cannot exceed totalCopies (only when
         // either side is being changed in this request, otherwise the
         // existing document state is used)
+        let preUpdateAvailableCopies = null;
         if (setOps.availableCopies !== undefined || setOps.totalCopies !== undefined) {
             const existing = await Book.findById(id).select(
                 "totalCopies availableCopies"
@@ -268,6 +269,7 @@ export const updateBook = async (req, res) => {
                     message: "Book not found",
                 });
             }
+            preUpdateAvailableCopies = existing.availableCopies;
             const nextTotal =
                 setOps.totalCopies !== undefined ? setOps.totalCopies : existing.totalCopies;
             const nextAvailable =
@@ -373,6 +375,26 @@ export const updateBook = async (req, res) => {
                 success: false,
                 message: "Book not found",
             });
+        }
+
+        // -------------------------------------------------------
+        // WAITLIST FAN-OUT
+        // If this update increased availableCopies (admin added
+        // copies back into circulation), enqueue a waitlist job
+        // so every active waitlister gets a BOOK_AVAILABLE
+        // notification and is removed from the waitlist. Only
+        // trigger when the count went UP — decreasing copies
+        // (e.g. admin removed stock) is not a "book became
+        // available" event.
+        // -------------------------------------------------------
+        if (
+            has("availableCopies") &&
+            typeof availableCopies === "number" &&
+            typeof preUpdateAvailableCopies === "number" &&
+            availableCopies > preUpdateAvailableCopies
+        ) {
+            const gained = availableCopies - preUpdateAvailableCopies;
+            enqueueWaitlistAvailability(book._id, gained);
         }
 
         return res.status(200).json({
