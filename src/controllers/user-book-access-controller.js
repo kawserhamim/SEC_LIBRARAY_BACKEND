@@ -4,6 +4,7 @@ import { Book } from "../models/book-model.js";
 import { ReserveBook } from "../models/reserve-book.js";
 import { IssuedBook } from "../models/issuebook-model.js";
 import { Waitlist } from "../models/waitlist-model.js";
+import User from "../models/user-auth-models.js";
 import { buildBookSearchFilter } from "../utils/book-search.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
 
@@ -245,6 +246,67 @@ export const reserveBook = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Student not found",
+      });
+    }
+
+    // ---------------------------------------------
+    // Block fined users from reserving
+    // ---------------------------------------------
+    //
+    // Read fresh fine from the DB since req.user
+    // snapshot may be stale (fines are added by
+    // the expiry cron after login).
+    // ---------------------------------------------
+
+    const fineUser = await User.findById(userId)
+      .select("fine")
+      .lean();
+
+    if (fineUser && fineUser.fine > 0) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "You have an outstanding fine. Please clear it before reserving a book.",
+
+        data: {
+          fine: fineUser.fine,
+        },
+      });
+    }
+
+    // ---------------------------------------------
+    // Block reservation if user already has an
+    // unreturned issued copy of this book
+    // ---------------------------------------------
+
+    const alreadyIssued =
+      await IssuedBook.findOne({
+        user: userId,
+        book: bookId,
+
+        returnedAt: null,
+      })
+        .select(
+          "issuedId status borrowedAt dueDate",
+        )
+        .lean();
+
+    if (alreadyIssued) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "You already have an unreturned copy of this book. Please return it before reserving again.",
+
+        data: {
+          issuedId: alreadyIssued.issuedId,
+
+          status: alreadyIssued.status,
+
+          borrowedAt:
+            alreadyIssued.borrowedAt,
+
+          dueDate: alreadyIssued.dueDate,
+        },
       });
     }
 
