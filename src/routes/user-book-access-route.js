@@ -7,6 +7,8 @@ import {
   joinWaitlist,
   viewMyWaitlist,
   cancelWaitlist,
+  getMyReservations,
+  getMyIssuedBooks,
 } from "../controllers/user-book-access-controller.js";
 
 import { authenticate } from "../middlewares/auth-middleware.js";
@@ -98,6 +100,36 @@ router.delete(
 //   POST /api/admin/access/books/:bookId/issue/:reservationId
 // or issues directly via
 //   POST /api/admin/access/books/:bookId/issue-to/:userId
+
+
+// =====================================================
+// MY RESERVATIONS / ISSUED BOOKS
+// =====================================================
+
+// View my reservations (books I have reserved)
+// GET /api/student/reservations
+// GET /api/student/reservations?status=pending
+// GET /api/student/reservations?status=issued
+// GET /api/student/reservations?status=expired
+
+router.get(
+  "/reservations",
+  authenticate,
+  getMyReservations,
+);
+
+
+// View my issued books (books currently borrowed / returned)
+// GET /api/student/issued
+// GET /api/student/issued?status=borrowed
+// GET /api/student/issued?status=returned
+// GET /api/student/issued?status=overdue
+
+router.get(
+  "/issued",
+  authenticate,
+  getMyIssuedBooks,
+);
 
 
 export default router;

@@ -693,6 +693,183 @@ export const cancelWaitlist = async (req, res) => {
 
 
 // =====================================================
+// GET MY RESERVATIONS
+// GET /api/student/reservations?status=pending&offset=0&limit=3
+// Returns the books the logged-in student reserved.
+// =====================================================
+
+export const getMyReservations = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const pagination = getOffsetPagination(req.query);
+
+    if (pagination.error) {
+      return res.status(400).json({
+        success: false,
+        message: pagination.error,
+      });
+    }
+
+    const offset = pagination.offset;
+    const limit = pagination.limit;
+
+    // build filter: always by user, plus optional status
+    const filter = { user: userId };
+
+    if (req.query.status) {
+      const ok = ["pending", "issued", "expired"];
+      if (!ok.includes(req.query.status)) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid status. Use pending, issued or expired.",
+        });
+      }
+      filter.status = req.query.status;
+    }
+
+    // count + page in parallel
+    const totalCount = await ReserveBook.countDocuments(filter);
+
+    const rows = await ReserveBook.find(filter)
+      .select(
+        "reservedId book book_title book_authors status reservedAt expiresAt",
+      )
+      .sort({ reservedAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .lean();
+
+    // shape the data simply
+    const now = new Date();
+
+    const data = rows.map((r) => {
+      const expiredByClock =
+        r.status === "pending" && r.expiresAt <= now;
+
+      return {
+        reservedId: r.reservedId,
+        bookTitle: r.book_title,
+        bookAuthors: r.book_authors,
+        bookId: r.book,
+        status: expiredByClock ? "expired" : r.status,
+        reservedAt: r.reservedAt,
+        expiresAt: r.expiresAt,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        data.length > 0
+          ? "Reservations found"
+          : "No reservations found",
+      totalCount,
+      offset,
+      limit,
+      data,
+    });
+  } catch (error) {
+    console.error("getMyReservations:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in getting reservations",
+    });
+  }
+};
+
+
+// =====================================================
+// GET MY ISSUED BOOKS
+// GET /api/student/issued?status=borrowed&offset=0&limit=3
+// Returns the books issued to the logged-in student.
+// =====================================================
+
+export const getMyIssuedBooks = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const pagination = getOffsetPagination(req.query);
+
+    if (pagination.error) {
+      return res.status(400).json({
+        success: false,
+        message: pagination.error,
+      });
+    }
+
+    const offset = pagination.offset;
+    const limit = pagination.limit;
+
+    // build filter: always by user, plus optional status
+    const filter = { user: userId };
+
+    if (req.query.status) {
+      const ok = ["borrowed", "returned", "overdue"];
+      if (!ok.includes(req.query.status)) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid status. Use borrowed, returned or overdue.",
+        });
+      }
+      filter.status = req.query.status;
+    }
+
+    // count + page in parallel
+    const totalCount = await IssuedBook.countDocuments(filter);
+
+    const rows = await IssuedBook.find(filter)
+      .select(
+        "issuedId book bookTitle bookAuthors status borrowedAt dueDate returnedAt",
+      )
+      .sort({ borrowedAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .lean();
+
+    // shape the data simply
+    const now = new Date();
+
+    const data = rows.map((b) => {
+      const overdueByClock =
+        b.status === "borrowed" && b.dueDate <= now;
+
+      return {
+        issuedId: b.issuedId,
+        bookTitle: b.bookTitle,
+        bookAuthors: b.bookAuthors,
+        bookId: b.book,
+        status: overdueByClock ? "overdue" : b.status,
+        borrowedAt: b.borrowedAt,
+        dueDate: b.dueDate,
+        returnedAt: b.returnedAt,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        data.length > 0
+          ? "Issued books found"
+          : "No issued books found",
+      totalCount,
+      offset,
+      limit,
+      data,
+    });
+  } catch (error) {
+    console.error("getMyIssuedBooks:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in getting issued books",
+    });
+  }
+};
+
+
+// =====================================================
 // (Intentionally empty: students can only RESERVE.
 //  Issuing is performed by an admin via:
 //    POST /api/admin/access/books/:bookId/issue/:reservationId
