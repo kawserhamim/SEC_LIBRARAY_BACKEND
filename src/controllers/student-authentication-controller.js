@@ -73,15 +73,37 @@ export const createStudentAuthentication = async (req, res) => {
 
 export const getAllStudentAuthentications = async (req, res) => {
     try {
-        const studentAuthentications = await StudentAuthentication.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+
+        const skip = (page - 1) * limit;
+
+        const totalStudents = await StudentAuthentication.countDocuments();
+
+        const studentAuthentications = await StudentAuthentication.find()
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        const pageCount = Math.ceil(totalStudents / limit);
 
         res.status(200).json({
             success: true,
             message: 'Student authentications retrieved successfully',
-            data: studentAuthentications
+            data: studentAuthentications,
+            pagination: {
+                totalStudents,
+                page,
+                limit,
+                pageCount,
+                hasNextPage: page < pageCount,
+                hasPreviousPage: page > 1
+            }
         });
+
     } catch (error) {
         console.error('Error retrieving student authentications:', error);
+
         res.status(500).json({
             success: false,
             message: 'Failed to retrieve student authentications',
