@@ -57,7 +57,7 @@ const issuedBookSchema = new mongoose.Schema(
         // Which student borrowed the book
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "student_user",
+            ref: "User",
             required: [true, "User is required"],
             index: true,
         },

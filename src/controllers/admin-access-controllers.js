@@ -116,11 +116,11 @@ export const addBook = async (req, res) => {
             category: category ? String(category).toUpperCase() : "GENERAL",
             ...(coverImage && (coverImage.url || coverImage.publicId)
                 ? {
-                      coverImage: {
-                          url: coverImage.url ?? null,
-                          publicId: coverImage.publicId ?? null,
-                      },
-                  }
+                    coverImage: {
+                        url: coverImage.url ?? null,
+                        publicId: coverImage.publicId ?? null,
+                    },
+                }
                 : {}),
         });
 
@@ -447,14 +447,20 @@ export const getBooksForAdmin = async (req, res) => {
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 20;
 
+        const totalBooks = await Book.countDocuments();
+
         const books = await Book.find()
             .select("title authors isbn totalCopies availableCopies category")
             .skip(offset)
             .limit(limit);
 
+        const pageCount = Math.ceil(totalBooks / limit);
+
         return res.status(200).json({
             success: true,
             count: books.length,
+            totalBooks,
+            pageCount,
             offset,
             limit,
             data: books,
@@ -504,67 +510,7 @@ export const searchBook = async (req, res) => {
 };
 
 
-// =====================================================
-// STUDENT MANAGEMENT
-// =====================================================
 
-// POST /api/admin/access/students
-// Admin adds a student.
-// Saves name, email, regNo, season and department
-// on the User collection so the student can later
-// finish signup with password / phone / gender.
-export const addStudent = async (req, res) => {
-    try {
-        const { name, email, regNo, season, department } = req.body;
-
-        // 1. check required fields
-        if (!name || !email || !regNo || !season || !department) {
-            return res.status(400).json({
-                success: false,
-                message: "name, email, regNo, season and department are required",
-            });
-        }
-
-        // 2. check duplicate
-        const existing = await User.findOne({
-            $or: [{ email: email.toLowerCase() }, { regNo }],
-        });
-        if (existing) {
-            return res.status(409).json({
-                success: false,
-                message: "Student with this email or regNo already exists",
-            });
-        }
-
-        // 3. save the student
-        const student = await User.create({
-            name,
-            email,
-            regNo,
-            season,
-            department,
-        });
-
-        return res.status(201).json({
-            success: true,
-            message: "Student added successfully",
-            student: {
-                id: student._id,
-                name: student.name,
-                email: student.email,
-                regNo: student.regNo,
-                season: student.season,
-                department: student.department,
-            },
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error adding student",
-            error: error.message,
-        });
-    }
-};
 
 
 // DELETE /api/admin/access/students/:id
@@ -602,16 +548,42 @@ export const getAllStudent = async (req, res) => {
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 20;
 
-        const students = await User.find({ role: "user" })
-            .select("name email regNo season department role")
+        const { department, Session } = req.query;
+
+        const filter = {
+            role: "user",
+        };
+
+        // Department filter
+        if (department) {
+            filter.department = department;
+        }
+
+        // Session filter
+        if (Session) {
+            filter.Session = Session;
+        }
+
+        const totalStudents = await User.countDocuments(filter);
+
+        const students = await User.find(filter)
+            .select("name email regNo Session department role")
             .skip(offset)
             .limit(limit);
+
+        const pageCount = Math.ceil(totalStudents / limit);
 
         return res.status(200).json({
             success: true,
             count: students.length,
+            totalStudents,
+            pageCount,
             offset,
             limit,
+            filters: {
+                department: department || "all",
+                Session: Session || "all",
+            },
             data: students,
         });
     } catch (error) {
@@ -637,7 +609,7 @@ export const searchStudent = async (req, res) => {
         }
 
         const student = await User.findOne({ regNo }).select(
-            "name email regNo season department",
+            "name email regNo Session department",
         );
         if (!student) {
             return res.status(404).json({
@@ -759,7 +731,7 @@ export const issueReservedBook = async (req, res) => {
             userName: user.name,
             userRegNo: user.regNo,
             userDepartment: user.department,
-            userSeason: user.season,
+            userSession: user.Session,
             reservation: reservation._id,
         });
 
@@ -787,7 +759,7 @@ export const issueReservedBook = async (req, res) => {
 // The student's regNo MUST be sent in the JSON body:
 //   Body: { "regNo": "2021-1-60-001" }
 //
-// The student's name, regNo, season, department and the
+// The student's name, regNo, Session, department and the
 // book's title + authors are snapshotted onto the
 // IssuedBook row so they survive even if the source
 // records are later edited or deleted.
@@ -878,7 +850,7 @@ export const issueBookDirect = async (req, res) => {
             userName: user.name,
             userRegNo: user.regNo,
             userDepartment: user.department,
-            userSeason: user.season,
+            userSession: user.Session,
             reservation: null,
         });
 
@@ -973,7 +945,7 @@ export const returnIssuedBook = async (req, res) => {
 // GET /api/admin/access/issued?status=borrowed&regNo=...&bookId=...
 // Admin lists issued books (who borrowed what).
 // The snapshot fields (userName, userRegNo, userDepartment,
-// userSeason, bookTitle, bookAuthors) are denormalized on
+// userSession, bookTitle, bookAuthors) are denormalized on
 // the document so the response is always readable even
 // if a referenced Book or User record is missing.
 export const getIssuedBook = async (req, res) => {
@@ -986,7 +958,7 @@ export const getIssuedBook = async (req, res) => {
 
         const issuedBooks = await IssuedBook.find(filter)
             .populate("book", "title authors")
-            .populate("user", "name email regNo department season")
+            .populate("user", "name email regNo department Session")
             .sort({ borrowedAt: -1 });
 
         return res.status(200).json({
@@ -1007,7 +979,7 @@ export const getIssuedBook = async (req, res) => {
 // GET /api/admin/access/reservations?status=pending&regNo=...&bookId=...
 // Admin lists all reservations (who reserved what).
 // The snapshot fields (user_name, user_regNo, user_department,
-// user_season, book_title, book_authors) are denormalized
+// user_Session, book_title, book_authors) are denormalized
 // on the document so the response is always readable.
 export const getAllReservation = async (req, res) => {
     try {
@@ -1019,7 +991,7 @@ export const getAllReservation = async (req, res) => {
 
         const reservations = await ReserveBook.find(filter)
             .populate("book", "title authors")
-            .populate("user", "name email regNo department season")
+            .populate("user", "name email regNo department Session")
             .sort({ reservedAt: -1 });
 
         return res.status(200).json({

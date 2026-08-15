@@ -46,7 +46,7 @@ router.get("/books/search", searchBook);              // search books
 
 
 // STUDENT MANAGEMENT
-router.post("/students", addStudent);                 // add student
+               
 router.get("/students", getAllStudent);               // list students
 router.post("/students/search", searchStudent);       // search student
 router.delete("/students/:id", deleteStudent);        // delete student
