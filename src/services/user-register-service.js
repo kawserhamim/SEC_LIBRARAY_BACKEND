@@ -69,18 +69,18 @@ export async function loginUser(data) {
 
 export async function changePassword(userId, data) {
   const user = await User.findById(userId).select("+password");
-  if (!user) {
-    const err = new Error("User not found");
-    err.statusCode = 404;
-    throw err;
-  }
+  // if (!user) {
+  //   const err = new Error("User not found");
+  //   err.statusCode = 404;
+  //   throw err;
+  // }
 
-  const ok = await bcrypt.compare(data.oldPassword, user.password);
-  if (!ok) {
-    const err = new Error("Old password is incorrect");
-    err.statusCode = 401;
-    throw err;
-  }
+  // const ok = await bcrypt.compare(data.oldPassword, user.password);
+  // if (!ok) {
+  //   const err = new Error("Old password is incorrect");
+  //   err.statusCode = 401;
+  //   throw err;
+  // }
 
   const isSame = await bcrypt.compare(data.newPassword, user.password);
   if (isSame) {
