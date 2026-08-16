@@ -597,6 +597,7 @@ export const getAllStudent = async (req, res) => {
 export const searchStudent = async (req, res) => {
     try {
         const { regNo } = req.body;
+        console.log("Searching for student with regNo:", regNo);
         if (!regNo) {
             return res.status(400).json({
                 success: false,
