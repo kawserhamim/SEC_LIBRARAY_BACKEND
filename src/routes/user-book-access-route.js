@@ -73,6 +73,7 @@ router.post(
 // View my active waitlists
 // GET /api/student/waitlist
 
+
 router.get(
   "/waitlist",
   authenticate,

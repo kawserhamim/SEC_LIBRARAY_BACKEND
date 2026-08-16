@@ -162,3 +162,40 @@ export const deleteStudentAuthentication = async (req, res) => {
         });
     }
 };
+
+
+export const searchStudentAuthentication = async (req, res) => {
+    try {
+        const { query } = req.body;
+
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: "Search query is required"
+            });
+        }
+
+        const searchResults = await StudentAuthentication.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { gmail: { $regex: query, $options: 'i' } },
+                { regNo: { $regex: query, $options: 'i' } }
+            ]
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Search results retrieved successfully",
+            data: searchResults
+        });
+
+    } catch (error) {
+        console.error("Error searching student authentications:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to search student authentications",
+            error: error.message        
+        });
+    }
+};
