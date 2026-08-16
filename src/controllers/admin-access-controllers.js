@@ -593,7 +593,17 @@ export const getAllStudent = async (req, res) => {
 
 
 // POST /api/admin/access/students/search
-// Admin searches a student by regNo
+// Admin searches a student by regNo and returns the student's
+// full issue + reservation history.
+//
+// Body: { regNo }  (regNo is required)
+//
+// The student is resolved from the StudentAuthentication registry
+// (the student record). If a student record exists but there is no
+// linked User account, we still return the history — the history
+// is matched on the denormalized regNo snapshot fields stored on
+// IssuedBook (userRegNo) and ReserveBook (user_regNo) at the time
+// of issue/reservation, so it works even if the User record is gone.
 export const searchStudent = async (req, res) => {
     try {
         const { regNo } = req.body;
@@ -605,25 +615,80 @@ export const searchStudent = async (req, res) => {
             });
         }
 
-        const student = await User.findOne({ regNo }).select(
-            "name email regNo Session department",
-        );
+        // 1. Try the student registry first.
+        let student =
+            (await StudentAuthentication.findOne({ regNo }).select(
+                "name gmail regNo Session department",
+            ))?.toObject() || null;
+
+        // 2. Fall back to the User collection if the student hasn't
+        //    been registered in StudentAuthentication yet.
+        let user = null;
         if (!student) {
-            return res.status(404).json({
-                success: false,
-                message: "Student not found",
-            });
+            user = await User.findOne({ regNo }).select(
+                "name email regNo Session department",
+            );
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Student not found",
+                });
+            }
+            student = {
+                name: user.name,
+                regNo: user.regNo,
+                Session: user.Session,
+                department: user.department,
+                ...(user.email ? { email: user.email } : {}),
+            };
         }
 
-        const issuedBooks = await IssuedBook.find({ user: student._id })
-            .populate("book", "title authors");
+        // 3. Build a list of every user _id that maps to this regNo,
+        //    so historical records written under either collection
+        //    are returned.
+        const userIds = [];
+        if (user) userIds.push(user._id);
+        if (userIds.length === 0) {
+            // No User record linked — pull any user account that
+            // shares this regNo, just in case.
+            const linkedUsers = await User.find({ regNo }).select("_id");
+            userIds.push(...linkedUsers.map((u) => u._id));
+        }
 
-        const reservations = await ReserveBook.find({ user: student._id })
-            .populate("book", "title authors");
+        // 4. Fetch the full history. Prefer the denormalized regNo
+        //    snapshot so we never miss rows even if the source user
+        //    record is gone.
+        const issuedFilter = {
+            $or: [
+                { userRegNo: regNo },
+                ...(userIds.length ? [{ user: { $in: userIds } }] : []),
+            ],
+        };
+        const reservationFilter = {
+            $or: [
+                { user_regNo: regNo },
+                ...(userIds.length ? [{ user: { $in: userIds } }] : []),
+            ],
+        };
+
+        const issuedBooks = await IssuedBook.find(issuedFilter)
+            .populate("book", "title authors")
+            .populate("user", "name email regNo department Session")
+            .sort({ borrowedAt: -1 });
+
+        const reservations = await ReserveBook.find(reservationFilter)
+            .populate("book", "title authors")
+            .populate("user", "name email regNo department Session")
+            .sort({ reservedAt: -1 });
 
         return res.status(200).json({
             success: true,
             student,
+            regNo,
+            counts: {
+                issuedBooks: issuedBooks.length,
+                reservations: reservations.length,
+            },
             issuedBooks,
             reservations,
         });
@@ -634,6 +699,164 @@ export const searchStudent = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+
+// POST /api/admin/access/issued/history
+// Admin searches the ISSUED-BOOK history of a particular student
+// by regNo (sent in req.body).
+//
+// Body: { regNo, status?, bookId? }  (regNo is required)
+//
+// The student is resolved from StudentAuthentication first, with
+// a User-collection fallback. History rows are matched on the
+// denormalized regNo snapshot (userRegNo) so records are returned
+// even if the linked User account has been removed.
+export const searchIssuedHistoryByRegNo = async (req, res) => {
+    try {
+        const { regNo, status, bookId } = req.body || {};
+
+        if (!regNo) {
+            return res.status(400).json({
+                success: false,
+                message: "regNo is required in request body",
+            });
+        }
+
+        const student = await resolveStudentByRegNo(regNo);
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        const userIds = await collectUserIdsForRegNo(regNo, student);
+
+        const filter = {
+            $or: [
+                { userRegNo: regNo },
+                ...(userIds.length ? [{ user: { $in: userIds } }] : []),
+            ],
+        };
+        if (status) filter.status = status;
+        if (bookId) filter.book = bookId;
+
+        const issuedBooks = await IssuedBook.find(filter)
+            .populate("book", "title authors")
+            .populate("user", "name email regNo department Session")
+            .sort({ borrowedAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            student,
+            regNo,
+            count: issuedBooks.length,
+            issuedBooks,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching issued-book history",
+            error: error.message,
+        });
+    }
+};
+
+
+// POST /api/admin/access/reservations/history
+// Admin searches the RESERVATION history of a particular student
+// by regNo (sent in req.body).
+//
+// Body: { regNo, status?, bookId? }  (regNo is required)
+//
+// Same student-resolution rules as searchIssuedHistoryByRegNo;
+// history is matched on the denormalized user_regNo snapshot.
+export const searchReservationHistoryByRegNo = async (req, res) => {
+    try {
+        const { regNo, status, bookId } = req.body || {};
+
+        if (!regNo) {
+            return res.status(400).json({
+                success: false,
+                message: "regNo is required in request body",
+            });
+        }
+
+        const student = await resolveStudentByRegNo(regNo);
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        const userIds = await collectUserIdsForRegNo(regNo, student);
+
+        const filter = {
+            $or: [
+                { user_regNo: regNo },
+                ...(userIds.length ? [{ user: { $in: userIds } }] : []),
+            ],
+        };
+        if (status) filter.status = status;
+        if (bookId) filter.book = bookId;
+
+        const reservations = await ReserveBook.find(filter)
+            .populate("book", "title authors")
+            .populate("user", "name email regNo department Session")
+            .sort({ reservedAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            student,
+            regNo,
+            count: reservations.length,
+            reservations,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching reservation history",
+            error: error.message,
+        });
+    }
+};
+
+
+// =====================================================
+// HELPERS for the per-student history endpoints.
+// Kept private to this module (not exported).
+// =====================================================
+
+// Resolve a student record by regNo. Tries the StudentAuthentication
+// registry first; falls back to the User collection. Returns a plain
+// object so both branches return the same shape to the client.
+const resolveStudentByRegNo = async (regNo) => {
+    const fromRegistry = await StudentAuthentication.findOne({ regNo })
+        .select("name gmail regNo Session department");
+    if (fromRegistry) return fromRegistry.toObject();
+
+    const fromUser = await User.findOne({ regNo }).select(
+        "name email regNo Session department",
+    );
+    if (!fromUser) return null;
+
+    return {
+        name: fromUser.name,
+        regNo: fromUser.regNo,
+        Session: fromUser.Session,
+        department: fromUser.department,
+        ...(fromUser.email ? { email: fromUser.email } : {}),
+    };
+};
+
+// Collect every User._id that maps to this regNo so historical
+// IssuedBook / ReserveBook rows that were written under the
+// user-ObjectId can still be returned.
+const collectUserIdsForRegNo = async (regNo, student) => {
+    const linkedUsers = await User.find({ regNo }).select("_id");
+    return linkedUsers.map((u) => u._id);
 };
 
 
