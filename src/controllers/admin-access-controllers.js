@@ -475,7 +475,7 @@ export const getBooksForAdmin = async (req, res) => {
         const totalBooks = await Book.countDocuments();
 
         const books = await Book.find()
-            .select("title authors isbn totalCopies availableCopies category")
+            .select("title authors isbn totalCopies availableCopies category coverImage")
             .skip(offset)
             .limit(limit);
 
