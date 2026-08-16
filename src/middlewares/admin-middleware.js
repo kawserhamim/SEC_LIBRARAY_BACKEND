@@ -24,7 +24,7 @@ export function authenticateAdmin(req, res, next) {
     }
 
     req.user = {
-      id: payload.sub,
+      id: payload.id,
       role: payload.role,
     };
 
