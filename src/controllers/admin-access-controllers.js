@@ -470,7 +470,7 @@ export const deleteBook = async (req, res) => {
 export const getBooksForAdmin = async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 3 ;
 
         const totalBooks = await Book.countDocuments();
 
@@ -542,7 +542,7 @@ export const searchBook = async (req, res) => {
 export const getAllStudent = async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
-        const limit = parseInt(req.query.limit) || 20;
+        const limit = parseInt(req.query.limit) || 3 ;
 
         const { department, Session } = req.query;
 
