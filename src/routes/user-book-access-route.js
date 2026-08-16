@@ -1,135 +1,99 @@
 import express from "express";
 
 import {
-  getBooksForStudent,
-  searchBook,
-  reserveBook,
-  joinWaitlist,
-  viewMyWaitlist,
-  cancelWaitlist,
-  getMyReservations,
-  getMyIssuedBooks,
+    getBooksForStudent,
+    searchBook,
+    reserveBook,
+    joinWaitlist,
+    viewMyWaitlist,
+    cancelWaitlist,
+    getMyReservations,
+    getMyIssuedBooks,
 } from "../controllers/user-book-access-controller.js";
+
+import {
+    getAllResearchPapers,
+    getResearchPaperById,
+    searchResearchPapers,
+} from "../controllers/research-paper-controller.js";
 
 import { authenticate } from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
 
 
-// =====================================================
-// BOOK ROUTES
-// =====================================================
+// Authentication
 
-// Get books for student
-// GET /api/student/books
-// GET /api/student/books?category=CSE
-// GET /api/student/books?category=CSE&offset=0&limit=3
+router.use(authenticate);
+
+
+// Book routes
 
 router.get(
-  "/books",
-  authenticate,
-  getBooksForStudent,
+    "/books",
+    getBooksForStudent
+);
+
+router.get(
+    "/books/search",
+    searchBook
 );
 
 
-// Search books
-// GET /api/student/books/search?query=clean
-
-router.get(
-  "/books/search",
-  authenticate,
-  searchBook,
-);
-
-
-// =====================================================
-// RESERVATION ROUTES
-// =====================================================
-
-// Reserve a particular book
-// POST /api/student/books/:bookId/reserve
+// Reservation routes
 
 router.post(
-  "/books/:bookId/reserve",
-  authenticate,
-  reserveBook,
+    "/books/:bookId/reserve",
+    reserveBook
 );
 
 
-// =====================================================
-// WAITLIST ROUTES
-// =====================================================
-
-// Join waitlist for a particular book
-// POST /api/student/books/:bookId/waitlist
+// Waitlist routes
 
 router.post(
-  "/books/:bookId/waitlist",
-  authenticate,
-  joinWaitlist,
+    "/books/:bookId/waitlist",
+    joinWaitlist
 );
-
-
-// View my active waitlists
-// GET /api/student/waitlist
-
 
 router.get(
-  "/waitlist",
-  authenticate,
-  viewMyWaitlist,
+    "/waitlist",
+    viewMyWaitlist
 );
-
-
-// Cancel/remove my waitlist
-// DELETE /api/student/books/:bookId/waitlist
 
 router.delete(
-  "/books/:bookId/waitlist",
-  authenticate,
-  cancelWaitlist,
+    "/books/:bookId/waitlist",
+    cancelWaitlist
 );
 
 
-// =====================================================
-// ISSUE ROUTES (students reserve; admin issues)
-// =====================================================
-
-// Students CANNOT issue books themselves.
-// They can only reserve a book; an admin converts
-// the reservation into an IssuedBook via
-//   POST /api/admin/access/books/:bookId/issue/:reservationId
-// or issues directly via
-//   POST /api/admin/access/books/:bookId/issue-to/:userId
-
-
-// =====================================================
-// MY RESERVATIONS / ISSUED BOOKS
-// =====================================================
-
-// View my reservations (books I have reserved)
-// GET /api/student/reservations
-// GET /api/student/reservations?status=pending
-// GET /api/student/reservations?status=issued
-// GET /api/student/reservations?status=expired
+// Reservation and issued book routes
 
 router.get(
-  "/reservations",
-  authenticate,
-  getMyReservations,
+    "/reservations",
+    getMyReservations
+);
+
+router.get(
+    "/issued",
+    getMyIssuedBooks
 );
 
 
-// View my issued books (books currently borrowed / returned)
-// GET /api/student/issued
-// GET /api/student/issued?status=borrowed
-// GET /api/student/issued?status=returned
-// GET /api/student/issued?status=overdue
+// Research paper routes
 
 router.get(
-  "/issued",
-  authenticate,
-  getMyIssuedBooks,
+    "/research-papers",
+    getAllResearchPapers
+);
+
+router.get(
+    "/research-papers/:id",
+    getResearchPaperById
+);
+
+router.get(
+    "/research-papers/search",
+    searchResearchPapers
 );
 
 
