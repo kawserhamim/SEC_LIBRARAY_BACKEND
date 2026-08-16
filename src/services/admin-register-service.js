@@ -4,15 +4,16 @@ import Admin from "../models/admin-model.js";
 export async function loginAdmin(data) {
   const admin = await Admin.findOne({ regNo: data.regNo }).select("+password");
 
+
   if (!admin) {
-    const err = new Error("Invalid regNo or password");
+    const err = new Error("Invalid credentials");
     err.statusCode = 401;
     throw err;
   }
 
   const ok = await bcrypt.compare(data.password, admin.password);
   if (!ok) {
-    const err = new Error("Invalid regNo or password");
+    const err = new Error("Invalid credentials");
     err.statusCode = 401;
     throw err;
   }
@@ -27,7 +28,7 @@ export async function registerAdmin(data) {
     }).lean();
 
     if (existing) {
-      const err = new Error("Admin with this email or regNo already exists");
+      const err = new Error("Admin with this email or registration number already exists");
       err.statusCode = 409;
       throw err;
     }

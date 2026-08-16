@@ -18,6 +18,7 @@
 
 import { Book } from "../models/book-model.js";
 import User from "../models/user-auth-models.js";
+import StudentAuthentication from "../models/student-authentication-model.js";
 import { ReserveBook } from "../models/reserve-book.js";
 import { IssuedBook } from "../models/issuebook-model.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
@@ -193,7 +194,7 @@ export const updateBook = async (req, res) => {
                 if (!Array.isArray(authors)) {
                     return res.status(400).json({
                         success: false,
-                        message: "authors must be an array of strings",
+                        message: "authors must be  a non-empty string",
                     });
                 }
                 list = authors
@@ -295,6 +296,8 @@ export const updateBook = async (req, res) => {
                 "GENERAL",
                 "MATH",
                 "ARTS",
+                "HISTORY",
+                "OTHERS"
             ];
             const normalized = String(category).toUpperCase();
             if (!allowed.includes(normalized)) {
@@ -467,7 +470,7 @@ export const deleteBook = async (req, res) => {
 export const getBooksForAdmin = async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
-        const limit = parseInt(req.query.limit) || 20;
+        const limit = parseInt(req.query.limit) || 10 ;
 
         const totalBooks = await Book.countDocuments();
 
@@ -541,8 +544,16 @@ export const deleteStudent = async (req, res) => {
     try {
         const { id } = req.params;
 
+        const user = await User.findById(id);
+
+        const studentAuth = await StudentAuthentication.findOne({ regNo: user.regNo });
+
+        await studentAuth.deleteOne(); 
+        await user.deleteOne();
+
         const student = await User.findByIdAndDelete(id);
-        if (!student) {
+        
+        if (!studentAuth || !user) {
             return res.status(404).json({
                 success: false,
                 message: "Student not found",

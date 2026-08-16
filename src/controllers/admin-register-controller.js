@@ -89,7 +89,7 @@ export const me = async (req, res) => {
     if (!admin) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Unauthorized access",
       });
     }
 

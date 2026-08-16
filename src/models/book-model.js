@@ -9,6 +9,8 @@ const BOOK_CATEGORIES = [
     "GENERAL",
     "MATH",
     "ARTS",
+    "HISTORY",
+    "OTHERS"
 ];
 
 const bookSchema = new mongoose.Schema(

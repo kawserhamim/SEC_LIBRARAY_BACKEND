@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 const COOKIE_NAME = "auth_token";
-const SESSION_TTL_MS = 1000 * 60 * 60; // 1 hour
+const SESSION_TTL_MS = 24 * 1000 * 60 * 60; // 1 hour
 
 export function signAuthToken(user) {
   return jwt.sign(
