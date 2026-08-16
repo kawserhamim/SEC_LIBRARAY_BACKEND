@@ -17,7 +17,7 @@ import {
     searchBook,
     // student management
 
-    deleteStudent,
+    // deleteStudent,
     getAllStudent,
     searchStudent,
     // issue / return
