@@ -54,7 +54,7 @@ router.get("/books/search", searchBook);              // search books
                
 router.get("/students", getAllStudent);               // list students
 router.post("/students/search", searchStudent);       // search student
-router.delete("/students/:id", deleteStudent);        // delete student
+     // delete student
 
 
 // ISSUE FLOW

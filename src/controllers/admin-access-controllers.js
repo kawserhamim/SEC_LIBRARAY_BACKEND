@@ -470,7 +470,7 @@ export const deleteBook = async (req, res) => {
 export const getBooksForAdmin = async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
-        const limit = parseInt(req.query.limit) || 10 ;
+        const limit = parseInt(req.query.limit) || 10;
 
         const totalBooks = await Book.countDocuments();
 
@@ -535,43 +535,6 @@ export const searchBook = async (req, res) => {
 };
 
 
-
-
-
-// DELETE /api/admin/access/students/:id
-// Admin deletes a student by Mongo id
-export const deleteStudent = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const user = await User.findById(id);
-
-        const studentAuth = await StudentAuthentication.findOne({ regNo: user.regNo });
-
-        await studentAuth.deleteOne(); 
-        await user.deleteOne();
-
-        const student = await User.findByIdAndDelete(id);
-        
-        if (!studentAuth || !user) {
-            return res.status(404).json({
-                success: false,
-                message: "Student not found",
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Student deleted",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error deleting student",
-            error: error.message,
-        });
-    }
-};
 
 
 // GET /api/admin/access/students
