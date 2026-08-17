@@ -467,17 +467,62 @@ export const deleteBook = async (req, res) => {
 
 // GET /api/admin/access/books
 // Admin lists all books (simple pagination)
+// Optional filters:
+//   - category    : exact category match (CSE, EEE, ...). Case-insensitive
+//                   on input, normalized to the schema's uppercase form.
+//   - availability: "available" (availableCopies > 0) or
+//                   "unavailable" (availableCopies <= 0). Anything else
+//                   is ignored.
 export const getBooksForAdmin = async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 3 ;
 
-        const totalBooks = await Book.countDocuments();
+        // ---- build the filter (same pattern as getAllStudent) -----------
+        const filter = {};
 
-        const books = await Book.find()
-            .select("title authors isbn totalCopies availableCopies category coverImage")
-            .skip(offset)
-            .limit(limit);
+        const allowedCategories = [
+            "CSE",
+            "EEE",
+            "CE",
+            "PHYSICS",
+            "CHEMISTRY",
+            "GENERAL",
+            "MATH",
+            "ARTS",
+            "HISTORY",
+            "OTHERS",
+        ];
+
+        if (req.query.category) {
+            const normalizedCategory = String(req.query.category).toUpperCase();
+            if (!allowedCategories.includes(normalizedCategory)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Invalid category. Allowed: ${allowedCategories.join(", ")}`,
+                });
+            }
+            filter.category = normalizedCategory;
+        }
+
+        if (req.query.availability) {
+            const av = String(req.query.availability).toLowerCase();
+            if (av === "available") {
+                filter.availableCopies = { $gt: 0 };
+            } else if (av === "unavailable") {
+                filter.availableCopies = { $lte: 0 };
+            }
+            // any other value: silently ignore (no availability filter)
+        }
+
+        // ---- same filter for both count and page -----------------------
+        const [totalBooks, books] = await Promise.all([
+            Book.countDocuments(filter),
+            Book.find(filter)
+                .select("title authors isbn totalCopies availableCopies category coverImage")
+                .skip(offset)
+                .limit(limit),
+        ]);
 
         const pageCount = Math.ceil(totalBooks / limit);
 
@@ -488,6 +533,10 @@ export const getBooksForAdmin = async (req, res) => {
             pageCount,
             offset,
             limit,
+            filters: {
+                category: req.query.category ? String(req.query.category).toUpperCase() : "all",
+                availability: req.query.availability ? String(req.query.availability).toLowerCase() : "all",
+            },
             data: books,
         });
     } catch (error) {
@@ -500,8 +549,10 @@ export const getBooksForAdmin = async (req, res) => {
 };
 
 
-// GET /api/admin/access/books/search?query=...
-// Admin searches books by title, authors, category, or ISBN
+// GET /api/admin/access/books/search?query=...&offset=...&limit=...
+// Admin searches books by title, authors, category, or ISBN.
+// Results are paginated (defaults: offset=0, limit=10, max limit=50)
+// and sorted by title for stable paging across requests.
 export const searchBook = async (req, res) => {
     try {
         const { query } = req.query;
@@ -512,17 +563,38 @@ export const searchBook = async (req, res) => {
             });
         }
 
+        // ---- pagination params (with safe defaults + a hard max) -------
+        const rawOffset = parseInt(req.query.offset);
+        const rawLimit = parseInt(req.query.limit);
+        const offset = Number.isFinite(rawOffset) && rawOffset >= 0 ? rawOffset : 0;
+        const DEFAULT_LIMIT = 10;
+        const MAX_LIMIT = 50;
+        let limit = Number.isFinite(rawLimit) && rawLimit > 0 ? rawLimit : DEFAULT_LIMIT;
+        if (limit > MAX_LIMIT) limit = MAX_LIMIT;
+
         const { filter, searchedFields } = buildBookSearchFilter(query);
 
-        const books = await Book.find(filter).select(
-            "title authors isbn totalCopies availableCopies category coverImage"
-        );
+        // Same filter for count + page so totals stay honest.
+        const [totalMatches, books] = await Promise.all([
+            Book.countDocuments(filter),
+            Book.find(filter)
+                .select("title authors isbn totalCopies availableCopies category coverImage")
+                .sort({ title: 1 })
+                .skip(offset)
+                .limit(limit),
+        ]);
+
+        const pageCount = Math.ceil(totalMatches / limit);
 
         return res.status(200).json({
             success: true,
             query: String(query).trim(),
             searchedFields,
             count: books.length,
+            totalMatches,
+            pageCount,
+            offset,
+            limit,
             data: books,
         });
     } catch (error) {
