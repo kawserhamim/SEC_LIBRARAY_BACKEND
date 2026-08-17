@@ -39,8 +39,8 @@ export const addBook = async (req, res) => {
     const authorList = Array.isArray(authors)
       ? authors.map((a) => (typeof a === "string" ? a.trim() : "")).filter(Boolean)
       : typeof author === "string" && author.trim()
-      ? [author.trim()]
-      : [];
+        ? [author.trim()]
+        : [];
 
     const normalizedIsbn =
       typeof isbn === "string" ? isbn.replace(/[-\s]/g, "").toUpperCase() : "";
@@ -82,11 +82,11 @@ export const addBook = async (req, res) => {
       category: category ? String(category).toUpperCase() : "GENERAL",
       ...(coverImage && (coverImage.url || coverImage.publicId)
         ? {
-            coverImage: {
-              url: coverImage.url ?? null,
-              publicId: coverImage.publicId ?? null,
-            },
-          }
+          coverImage: {
+            url: coverImage.url ?? null,
+            publicId: coverImage.publicId ?? null,
+          },
+        }
         : {}),
     });
 
@@ -472,10 +472,21 @@ export const issueReservedBook = async (req, res) => {
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ success: false, message: "Book not found" });
-    if (book.availableCopies <= 0) return res.status(409).json({ success: false, message: "No available copies" });
+
+    if (reservation.book.toString() !== book._id.toString()) {
+      return res.status(400).json({ success: false, message: "Reservation does not match this book" });
+    }
 
     const user = await User.findById(reservation.user);
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (user.fine && user.fine > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "Student has an outstanding fine. Please clear the fine before issuing a book.",
+        data: { fine: user.fine },
+      });
+    }
 
     const alreadyIssued = await IssuedBook.findOne({
       book: book._id,
@@ -490,8 +501,7 @@ export const issueReservedBook = async (req, res) => {
     });
     if (borrowedCount >= 3) return res.status(409).json({ success: false, message: "Borrowing limit (3) reached" });
 
-    book.availableCopies -= 1;
-    await book.save();
+    // Note: availableCopies was already decremented when the book was reserved.
 
     reservation.status = "issued";
     await reservation.save();
@@ -542,6 +552,14 @@ export const issueBookDirect = async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: `Student not found for regNo: ${trimmedRegNo}` });
     if (user.role && user.role !== "user") {
       return res.status(400).json({ success: false, message: "Target account is not a student" });
+    }
+
+    if (user.fine && user.fine > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "Student has an outstanding fine. Please clear the fine before issuing a book.",
+        data: { fine: user.fine },
+      });
     }
 
     const alreadyIssued = await IssuedBook.findOne({
@@ -755,14 +773,14 @@ export const getIssueStats = async (req, res) => {
   try {
     const [activeIssued, totalReturned] = await Promise.all([
       IssuedBook.countDocuments({ status: { $in: ["borrowed", "overdue"] } }),
-      
+
     ]);
 
     return res.status(200).json({
       success: true,
       message: "Issue stats fetched successfully",
       data: {
-        totalIssued: activeIssued ,
+        totalIssued: activeIssued,
         activeIssued,
       },
     });

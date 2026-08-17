@@ -174,19 +174,39 @@ export const reserveBook = async (req, res) => {
       });
     }
 
-    const reservation = await ReserveBook.create({
-      book: book._id,
-      book_title: book.title,
-      book_authors: book.authors,
-      user: user._id,
-      user_name: user.name,
-      user_regNo: user.regNo,
-      user_department: user.department,
-      user_Session: user.Session,
-      status: "pending",
-      reservedAt: new Date(),
-      expiresAt: new Date(Date.now() + 2 * 60 * 1000),
-    });
+    // Atomically decrement availableCopies if > 0
+    const updatedBook = await Book.findOneAndUpdate(
+      { _id: bookId, availableCopies: { $gt: 0 } },
+      { $inc: { availableCopies: -1 } },
+      { new: true }
+    );
+
+    if (!updatedBook) {
+      return res.status(409).json({
+        success: false,
+        message: "No available copy. You can join the waitlist.",
+      });
+    }
+
+    let reservation;
+    try {
+      reservation = await ReserveBook.create({
+        book: updatedBook._id,
+        book_title: updatedBook.title,
+        book_authors: updatedBook.authors,
+        user: user._id,
+        user_name: user.name,
+        user_regNo: user.regNo,
+        user_department: user.department,
+        user_Session: user.Session,
+        status: "pending",
+        reservedAt: new Date(),
+        expiresAt: new Date(Date.now() + 2 * 60 * 1000),
+      });
+    } catch (err) {
+      await Book.updateOne({ _id: bookId }, { $inc: { availableCopies: 1 } });
+      throw err;
+    }
 
     return res.status(201).json({
       success: true,
@@ -236,6 +256,61 @@ export const joinWaitlist = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ success: false, message: "Student not found" });
+    }
+
+    // Check fine
+    const fineUser = await User.findById(user._id).select("fine").lean();
+    if (fineUser && fineUser.fine > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "You have an outstanding fine. Please clear it before joining the waitlist.",
+        data: { fine: fineUser.fine },
+      });
+    }
+
+    // Check already issued
+    const alreadyIssued = await IssuedBook.findOne({
+      user: user._id,
+      book: bookId,
+      status: { $in: ["borrowed", "overdue"] },
+    })
+      .select("issuedId status borrowedAt dueDate")
+      .lean();
+
+    if (alreadyIssued) {
+      return res.status(409).json({
+        success: false,
+        message: "You already have an active issue for this book (borrowed or overdue). Please return it before joining the waitlist.",
+        data: {
+          issuedId: alreadyIssued.issuedId,
+          status: alreadyIssued.status,
+          borrowedAt: alreadyIssued.borrowedAt,
+          dueDate: alreadyIssued.dueDate,
+        },
+      });
+    }
+
+    // Check active reservation
+    const existingReservation = await ReserveBook.findOne({
+      user: user._id,
+      book: bookId,
+      status: "pending",
+      expiresAt: { $gt: new Date() },
+    })
+      .select("reservedId status reservedAt expiresAt")
+      .lean();
+
+    if (existingReservation) {
+      return res.status(409).json({
+        success: false,
+        message: "You already have a pending reservation for this book. Please claim or wait for it before joining the waitlist.",
+        data: {
+          reservedId: existingReservation.reservedId,
+          status: existingReservation.status,
+          reservedAt: existingReservation.reservedAt,
+          expiresAt: existingReservation.expiresAt,
+        },
+      });
     }
 
     const waitlist = await Waitlist.create({

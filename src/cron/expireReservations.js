@@ -19,25 +19,31 @@ const expireReservations = async () => {
 
     for (const reservation of expiredReservations) {
       try {
-        const book = await Book.findById(reservation.book);
+        // Atomically transition status from pending to expired so it is only processed once
+        const updatedReservation = await ReserveBook.findOneAndUpdate(
+          { _id: reservation._id, status: "pending" },
+          { $set: { status: "expired" } },
+          { new: true }
+        );
 
-        if (!book) {
-          await ReserveBook.updateOne({ _id: reservation._id }, { $set: { status: "expired" } });
+        if (!updatedReservation) {
+          // Already issued or processed by another run
           continue;
         }
 
-        let copyReturned = false;
-        if (book.availableCopies < book.totalCopies) {
-          book.availableCopies += 1;
-          await book.save();
-          copyReturned = true;
-        }
+        // Increase the book's available copies by 1
+        const updatedBook = await Book.findByIdAndUpdate(
+          reservation.book,
+          { $inc: { availableCopies: 1 } },
+          { new: true }
+        );
 
+        // Apply expiry fine to user
         await User.updateOne({ _id: reservation.user }, { $inc: { fine: EXPIRY_FINE } });
-        await ReserveBook.updateOne({ _id: reservation._id }, { $set: { status: "expired" } });
 
-        if (copyReturned) {
-          enqueueWaitlistAvailability(book._id, 1);
+        // Notify next students on waitlist that a copy has become available
+        if (updatedBook) {
+          enqueueWaitlistAvailability(updatedBook._id, 1);
         }
 
         console.log(
