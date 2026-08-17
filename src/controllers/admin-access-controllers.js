@@ -574,10 +574,6 @@ export const issueBookDirect = async (req, res) => {
       reservation: null,
     });
 
-    if (book.availableCopies === 0) {
-      enqueueWaitlistAvailability(book._id, 0);
-    }
-
     return res.status(201).json({
       success: true,
       message: "Book issued successfully (direct)",
