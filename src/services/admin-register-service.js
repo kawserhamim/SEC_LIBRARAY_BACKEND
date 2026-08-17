@@ -3,8 +3,6 @@ import Admin from "../models/admin-model.js";
 
 export async function loginAdmin(data) {
   const admin = await Admin.findOne({ regNo: data.regNo }).select("+password");
-
-
   if (!admin) {
     const err = new Error("Invalid credentials");
     err.statusCode = 401;
@@ -34,20 +32,15 @@ export async function registerAdmin(data) {
     }
 
     const passwordHash = await bcrypt.hash(data.password, 12);
-
-    const admin = await Admin.create({
+    return await Admin.create({
       name: data.name,
       email: data.email,
       regNo: data.regNo,
       password: passwordHash,
       role: "admin",
     });
-
-    return admin;
   } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
+    if (!error.statusCode) error.statusCode = 500;
     throw error;
   }
 }

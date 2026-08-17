@@ -28,10 +28,9 @@ export async function registerUser(data) {
     throw err;
   }
 
-
   const passwordHash = await bcrypt.hash(data.password, 12);
 
-  const user = await User.create({
+  return await User.create({
     name: data.name,
     regNo: data.regNo,
     email: data.email,
@@ -42,15 +41,10 @@ export async function registerUser(data) {
     gender: data.gender,
     role: "user",
   });
-
-  return user;
 }
 
 export async function loginUser(data) {
-  const user = await User.findOne({
-    regNo: data.regNo,
-  }).select("+password");
-
+  const user = await User.findOne({ regNo: data.regNo }).select("+password");
   if (!user) {
     const err = new Error("Invalid regNo or password");
     err.statusCode = 401;
@@ -69,18 +63,6 @@ export async function loginUser(data) {
 
 export async function changePassword(userId, data) {
   const user = await User.findById(userId).select("+password");
-  // if (!user) {
-  //   const err = new Error("User not found");
-  //   err.statusCode = 404;
-  //   throw err;
-  // }
-
-  // const ok = await bcrypt.compare(data.oldPassword, user.password);
-  // if (!ok) {
-  //   const err = new Error("Old password is incorrect");
-  //   err.statusCode = 401;
-  //   throw err;
-  // }
 
   const isSame = await bcrypt.compare(data.newPassword, user.password);
   if (isSame) {

@@ -3,7 +3,7 @@ import {
   registerAdminHandler,
   loginAdminHandler,
   logoutAdminHandler,
-  me
+  me,
 } from "../controllers/admin-register-controller.js";
 import { authenticateAdmin, loadAdmin } from "../middlewares/admin-middleware.js";
 

@@ -1,36 +1,14 @@
 import { z } from "zod";
 
 export const loginAdminSchema = z.object({
-  regNo: z
-    .string()
-    .trim()
-    .min(2)
-    .max(50),
-
-  password: z
-    .string()
-    .min(1),
+  regNo: z.string().trim().min(2).max(50),
+  password: z.string().min(1),
 });
 
 export const registerAdminSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2)
-    .max(100),
-
-  email: z
-    .string()
-    .trim()
-    .email()
-    .toLowerCase(),
-
-  regNo: z
-    .string()
-    .trim()
-    .min(2)
-    .max(50),
-
+  name: z.string().trim().min(2).max(100),
+  email: z.string().trim().email().toLowerCase(),
+  regNo: z.string().trim().min(2).max(50),
   password: z
     .string()
     .min(8)

@@ -4,126 +4,52 @@ const RESERVATION_DURATION_MINUTES = 2;
 
 const reserveBookSchema = new mongoose.Schema(
   {
-    // Which book
     book: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Book",
       required: [true, "Book is required"],
       index: true,
     },
-
-    // Book title snapshot
-    book_title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    // Multiple authors
-    book_authors: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
-
-    // Which user
+    book_title: { type: String, required: true, trim: true },
+    book_authors: [{ type: String, trim: true }],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User is required"],
       index: true,
     },
-
-    // User information snapshot
-    user_name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    user_regNo: {
-      type: String,
-      required: true,
-      trim: true,
-      index: true,
-    },
-
-    user_department: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    user_Session: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    // Reservation ID
+    user_name: { type: String, required: true, trim: true },
+    user_regNo: { type: String, required: true, trim: true, index: true },
+    user_department: { type: String, required: true, trim: true },
+    user_Session: { type: String, required: true, trim: true },
     reservedId: {
       type: String,
       unique: true,
       index: true,
       immutable: true,
-      default: () =>
-        `RB-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+      default: () => `RB-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
     },
-
-    // Reservation status
     status: {
       type: String,
       enum: ["pending", "issued", "expired"],
       default: "pending",
       index: true,
     },
-
-    // Reservation creation time
-    reservedAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true,
-    },
-
-    // Automatically expires after 2 minutes
+    reservedAt: { type: Date, default: Date.now, immutable: true },
     expiresAt: {
       type: Date,
       required: true,
       default: function () {
-        return new Date(
-          this.reservedAt.getTime() +
-          RESERVATION_DURATION_MINUTES * 60 * 1000
-        );
+        return new Date(this.reservedAt.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
       },
       index: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// User's reservations
-reserveBookSchema.index({
-  user: 1,
-  reservedAt: -1,
-});
+reserveBookSchema.index({ user: 1, reservedAt: -1 });
+reserveBookSchema.index({ book: 1, reservedAt: -1 });
+reserveBookSchema.index({ book: 1, status: 1, reservedAt: 1 });
 
-// Book's reservations
-reserveBookSchema.index({
-  book: 1,
-  reservedAt: -1,
-});
-
-// Find active reservations for a book
-reserveBookSchema.index({
-  book: 1,
-  status: 1,
-  reservedAt: 1,
-});
-
-export const ReserveBook = mongoose.model(
-  "ReservedBook",
-  reserveBookSchema
-);
+export const ReserveBook = mongoose.model("ReservedBook", reserveBookSchema);

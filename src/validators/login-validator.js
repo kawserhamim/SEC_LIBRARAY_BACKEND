@@ -1,15 +1,8 @@
 import { z } from "zod";
 
 export const loginUserSchema = z.object({
-  regNo: z
-    .string()
-    .trim()
-    .min(1)
-    .max(50),
-
-  password: z
-    .string()
-    .min(1),
+  regNo: z.string().trim().min(1).max(50),
+  password: z.string().min(1),
 });
 
 const passwordRules = z
@@ -21,6 +14,5 @@ const passwordRules = z
   .regex(/[0-9]/, "Password must contain a number");
 
 export const changePasswordSchema = z.object({
-  // oldPassword: z.string().min(1),
   newPassword: passwordRules,
 });

@@ -1,72 +1,25 @@
-// import express from "express";
+import { Router } from "express";
+import {
+  createResearchPaper,
+  getAllResearchPapers,
+  getResearchPaperById,
+  searchResearchPapers,
+  updateResearchPaper,
+  deleteResearchPaper,
+} from "../controllers/research-paper-controller.js";
+import { authenticate } from "../middlewares/auth-middleware.js";
+import { authenticateAdmin } from "../middlewares/admin-middleware.js";
 
-// import {
-//     createResearchPaper,
-//     getAllResearchPapers,
-//     getResearchPaperById,
-//     searchResearchPapers,
-//     updateResearchPaper,
-//     deleteResearchPaper
-// } from "../controllers/research-paper-controller.js";
+const router = Router();
 
-// import authMiddleware from "../middlewares/auth-middleware.js";
-// import adminMiddleware from "../middlewares/admin-middleware.js";
+// Student / Public
+router.get("/search", searchResearchPapers);
+router.get("/", getAllResearchPapers);
+router.get("/:id", getResearchPaperById);
 
-// const router = express.Router();
+// Admin
+router.post("/", authenticate, authenticateAdmin, createResearchPaper);
+router.patch("/:id", authenticate, authenticateAdmin, updateResearchPaper);
+router.delete("/:id", authenticate, authenticateAdmin, deleteResearchPaper);
 
-// /*
-// ========================================
-// PUBLIC / STUDENT
-// ========================================
-// */
-
-// // Search
-// router.get(
-//     "/search",
-//     searchResearchPapers
-// );
-
-// // Get all
-// router.get(
-//     "/",
-//     getAllResearchPapers
-// );
-
-// // Get single
-// router.get(
-//     "/:id",
-//     getResearchPaperById
-// );
-
-
-// /*
-// ========================================
-// ADMIN
-// ========================================
-// */
-
-// // Create
-// router.post(
-//     "/",
-//     authMiddleware,
-//     adminMiddleware,
-//     createResearchPaper
-// );
-
-// // Update
-// router.patch(
-//     "/:id",
-//     authMiddleware,
-//     adminMiddleware,
-//     updateResearchPaper
-// );
-
-// // Delete
-// router.delete(
-//     "/:id",
-//     authMiddleware,
-//     adminMiddleware,
-//     deleteResearchPaper
-// );
-
-// export default router;
+export default router;

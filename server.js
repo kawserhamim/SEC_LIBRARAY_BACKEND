@@ -1,5 +1,4 @@
 import "dotenv/config";
-
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
 import { testRedisConnection } from "./src/config/redis.js";
@@ -15,28 +14,18 @@ async function bootstrap() {
     throw new Error("Redis connection check failed");
   }
 
-  // Start the in-process waitlist notification queue
-  // (concurrency, retries, coalescing).
+  // Start in-process queue & cron jobs
   startWaitlistQueue();
-
-  // Start the cron job that expires pending reservations every minute.
   startExpireReservationsCron();
-
-  // Start the cron job that marks overdue issued books every minute.
   startOverdueIssuedBooksCron();
 
-  app.listen(process.env.PORT, () => {
-    console.log(
-      `API running on http://localhost:${process.env.PORT}`
-    );
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => {
+    console.log(`API running on http://localhost:${port}`);
   });
 }
 
 bootstrap().catch((error) => {
-  console.error(
-    "Application failed to start:",
-    error
-  );
-
+  console.error("Application failed to start:", error);
   process.exit(1);
 });

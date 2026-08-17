@@ -1,11 +1,7 @@
 import { registerUserSchema } from "../validators/register-validator.js";
 import { loginUserSchema, changePasswordSchema } from "../validators/login-validator.js";
 import { registerUser, loginUser, changePassword as changePasswordService } from "../services/user-register-service.js";
-import {
-  signAuthToken,
-  setAuthCookie,
-  clearAuthCookie,
-} from "../services/token-service.js";
+import { signAuthToken, setAuthCookie, clearAuthCookie } from "../services/token-service.js";
 import User from "../models/user-auth-models.js";
 
 function publicUser(user) {
@@ -59,7 +55,6 @@ export const register = async (req, res) => {
   try {
     const data = registerUserSchema.parse(req.body);
     const user = await registerUser(data);
-
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -74,7 +69,6 @@ export const login = async (req, res) => {
   try {
     const data = loginUserSchema.parse(req.body);
     const user = await loginUser(data);
-
     const token = signAuthToken(user);
     setAuthCookie(res, token);
 
@@ -104,10 +98,7 @@ export const me = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
     return res.status(200).json({
       success: true,
@@ -122,7 +113,6 @@ export const changePassword = async (req, res) => {
   try {
     const data = changePasswordSchema.parse(req.body);
     await changePasswordService(req.user.id, data);
-
     return res.status(200).json({
       success: true,
       message: "Password changed successfully",

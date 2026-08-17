@@ -1,29 +1,18 @@
-import {
-  verifyAuthToken,
-  getAuthTokenFromCookie,
-} from "../services/token-service.js";
+import { verifyAuthToken, getAuthTokenFromCookie } from "../services/token-service.js";
 import User from "../models/user-auth-models.js";
 import TemporaryRegNo from "../models/TemporaryRegNo.js";
 
 export async function authenticate(req, res, next) {
   const token = getAuthTokenFromCookie(req);
-
   if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "Authentication required",
-    });
+    return res.status(401).json({ success: false, message: "Authentication required" });
   }
 
   let payload;
-
   try {
     payload = verifyAuthToken(token);
   } catch {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token",
-    });
+    return res.status(401).json({ success: false, message: "Invalid or expired token" });
   }
 
   try {
@@ -32,14 +21,10 @@ export async function authenticate(req, res, next) {
       .lean();
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(401).json({ success: false, message: "User not found" });
     }
 
     const tempRegNo = await TemporaryRegNo.findOne({ regNo: user.regNo });
-
     if (tempRegNo) {
       return res.status(401).json({
         success: false,
@@ -63,9 +48,6 @@ export async function authenticate(req, res, next) {
     return next();
   } catch (error) {
     console.error("authenticate: failed to load user", error);
-    return res.status(500).json({
-      success: false,
-      message: "Authentication error",
-    });
+    return res.status(500).json({ success: false, message: "Authentication error" });
   }
 }

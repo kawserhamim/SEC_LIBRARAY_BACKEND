@@ -1,10 +1,6 @@
 import { registerAdminSchema, loginAdminSchema } from "../validators/admin-validator.js";
 import { registerAdmin, loginAdmin } from "../services/admin-register-service.js";
-import {
-  signAuthToken,
-  setAuthCookie,
-  clearAuthCookie,
-} from "../services/token-service.js";
+import { signAuthToken, setAuthCookie, clearAuthCookie } from "../services/token-service.js";
 
 function publicAdmin(admin) {
   return {
@@ -52,7 +48,6 @@ export const registerAdminHandler = async (req, res) => {
   try {
     const data = registerAdminSchema.parse(req.body);
     const admin = await registerAdmin(data);
-
     return res.status(201).json({
       success: true,
       message: "Admin registered successfully",
@@ -67,7 +62,6 @@ export const loginAdminHandler = async (req, res) => {
   try {
     const data = loginAdminSchema.parse(req.body);
     const admin = await loginAdmin(data);
-
     const token = signAuthToken(admin);
     setAuthCookie(res, token);
 
@@ -81,11 +75,9 @@ export const loginAdminHandler = async (req, res) => {
   }
 };
 
-
 export const me = async (req, res) => {
   try {
-    const admin = req.admin; // Attached by the `loadAdmin` middleware
-
+    const admin = req.admin;
     if (!admin) {
       return res.status(401).json({
         success: false,
@@ -103,7 +95,6 @@ export const me = async (req, res) => {
     return handleError(res, error, "fetch admin details");
   }
 };
-
 
 export const logoutAdminHandler = async (req, res) => {
   try {

@@ -11,16 +11,13 @@ if (!url || !token) {
 
 export const redis = new Redis({ url, token });
 
-// Test Redis connection
 export const testRedisConnection = async () => {
   try {
     const result = await redis.ping();
-
     if (result === "PONG") {
       console.log("✅ Upstash Redis connected successfully");
       return true;
     }
-
     console.log("⚠️ Redis responded:", result);
     return false;
   } catch (error) {
