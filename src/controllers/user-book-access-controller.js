@@ -37,7 +37,7 @@ export const getBooksForStudent = async (req, res) => {
     const [totalCount, books] = await Promise.all([
       Book.countDocuments(filter),
       Book.find(filter)
-        .select("title authors category totalCopies availableCopies coverImage")
+        .select("title authors category totalCopies availableCopies coverImage isbn")
         .sort({ title: 1 })
         .skip(offset)
         .limit(limit)
