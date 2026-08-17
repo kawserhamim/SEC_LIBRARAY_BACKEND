@@ -781,8 +781,12 @@ export const getIssueStats = async (req, res) => {
 
 export const getOverdueIssueStats = async (req, res) => {
   try {
+    const now = new Date();
     const overdueCount = await IssuedBook.countDocuments({
-      status: "overdue",
+      $or: [
+        { status: "overdue" },
+        { status: "borrowed", dueDate: { $lte: now } },
+      ],
     });
 
     return res.status(200).json({

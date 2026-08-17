@@ -30,5 +30,12 @@ export function clearAuthCookie(res) {
 }
 
 export function getAuthTokenFromCookie(req) {
-  return req.cookies?.[COOKIE_NAME] || null;
+  if (req.cookies?.[COOKIE_NAME]) {
+    return req.cookies[COOKIE_NAME];
+  }
+  const authHeader = req.headers?.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    return authHeader.substring(7).trim();
+  }
+  return null;
 }
