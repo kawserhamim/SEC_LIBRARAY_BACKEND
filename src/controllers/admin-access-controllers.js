@@ -467,8 +467,15 @@ export const issueReservedBook = async (req, res) => {
     const { bookId, reservationId } = req.params;
 
     const reservation = await ReserveBook.findById(reservationId);
-    if (!reservation) return res.status(404).json({ success: false, message: "Reservation not found" });
-    if (reservation.status !== "pending") return res.status(409).json({ success: false, message: "Reservation is not pending" });
+    if (!reservation) {
+      return res.status(404).json({ success: false, message: "Reservation not found" });
+    }
+    if (reservation.status !== "pending") {
+      return res.status(409).json({ success: false, message: `Reservation is not pending (current status: ${reservation.status})` });
+    }
+    if (reservation.expiresAt && new Date(reservation.expiresAt) <= new Date()) {
+      return res.status(409).json({ success: false, message: "Reservation has expired and cannot be issued" });
+    }
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ success: false, message: "Book not found" });
@@ -493,7 +500,17 @@ export const issueReservedBook = async (req, res) => {
       user: user._id,
       status: { $in: ["borrowed", "overdue"] },
     });
-    if (alreadyIssued) return res.status(409).json({ success: false, message: "Student already borrowed this book" });
+    if (alreadyIssued) {
+      return res.status(409).json({
+        success: false,
+        message: `Student already has an active copy of this book (status: ${alreadyIssued.status})`,
+        data: {
+          issuedId: alreadyIssued.issuedId,
+          status: alreadyIssued.status,
+          dueDate: alreadyIssued.dueDate,
+        },
+      });
+    }
 
     const borrowedCount = await IssuedBook.countDocuments({
       user: user._id,
@@ -567,7 +584,17 @@ export const issueBookDirect = async (req, res) => {
       user: user._id,
       status: { $in: ["borrowed", "overdue"] },
     });
-    if (alreadyIssued) return res.status(409).json({ success: false, message: "Student already borrowed this book" });
+    if (alreadyIssued) {
+      return res.status(409).json({
+        success: false,
+        message: `Student already has an active copy of this book (status: ${alreadyIssued.status})`,
+        data: {
+          issuedId: alreadyIssued.issuedId,
+          status: alreadyIssued.status,
+          dueDate: alreadyIssued.dueDate,
+        },
+      });
+    }
 
     const borrowedCount = await IssuedBook.countDocuments({
       user: user._id,

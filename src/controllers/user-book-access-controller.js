@@ -133,6 +133,19 @@ export const reserveBook = async (req, res) => {
       });
     }
 
+    // Check active borrowed books count (at most 3 borrowed books allowed)
+    const borrowedCount = await IssuedBook.countDocuments({
+      user: userId,
+      status: { $in: ["borrowed", "overdue"] },
+    });
+    if (borrowedCount >= 3) {
+      return res.status(409).json({
+        success: false,
+        message: "Borrowing limit (3) reached. You cannot reserve more books until you return current ones.",
+        data: { borrowedCount },
+      });
+    }
+
     // Check already issued
     const alreadyIssued = await IssuedBook.findOne({
       user: userId,
