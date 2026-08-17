@@ -759,21 +759,47 @@ export const getIssueStats = async (req, res) => {
   try {
     const [activeIssued, totalReturned] = await Promise.all([
       IssuedBook.countDocuments({ status: { $in: ["borrowed", "overdue"] } }),
-      IssuedBook.countDocuments({ status: "returned" }),
+      
     ]);
 
     return res.status(200).json({
       success: true,
       message: "Issue stats fetched successfully",
       data: {
-        totalIssued: activeIssued + totalReturned,
+        totalIssued: activeIssued ,
         activeIssued,
-        totalReturned,
       },
     });
   } catch (error) {
     console.error("getIssueStats error:", error);
     return res.status(500).json({ success: false, message: "Error fetching issue stats", error: error.message });
+  }
+};
+
+
+//GET /api/admin/access/stats/overdue
+
+export const getOverdueIssueStats = async (req, res) => {
+  try {
+    const overdueCount = await IssuedBook.countDocuments({
+      status: "overdue",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Overdue issue stats fetched successfully",
+      data: {
+        overdueCount,
+      },
+    });
+  } catch (error) {
+    console.error("getOverdueIssueStats error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching overdue issue stats",
+      error: error.message,
+    });
   }
 };
 

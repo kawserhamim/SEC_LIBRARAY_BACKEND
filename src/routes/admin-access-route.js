@@ -17,6 +17,7 @@ import {
   getIssueStats,
   searchRegisteredStudents,
   getReservationStats,
+  getOverdueIssueStats
 } from "../controllers/admin-access-controllers.js";
 import {
   createResearchPaper,
@@ -58,6 +59,8 @@ router.get("/stats/users", getUserStats);
 router.get("/stats/books", getBookStats);
 router.get("/stats/issued", getIssueStats);
 router.get("/stats/reservations", getReservationStats);
+router.get("/stats/overdue", getOverdueIssueStats);
+
 
 // Research papers
 router.get("/research-papers/search", searchResearchPapers);
