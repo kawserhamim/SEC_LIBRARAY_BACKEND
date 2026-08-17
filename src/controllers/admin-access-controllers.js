@@ -354,7 +354,7 @@ export const getAllStudent = async (req, res) => {
 
     const totalStudents = await User.countDocuments(filter);
     const students = await User.find(filter)
-      .select("name email regNo Session department role")
+      .select("name email regNo Session department role fine")
       .skip(offset)
       .limit(limit);
 
@@ -432,7 +432,7 @@ export const searchRegisteredStudents = async (req, res) => {
 
     const totalStudents = await User.countDocuments(filter);
     const students = await User.find(filter)
-      .select("name email regNo Session department role")
+      .select("name email regNo Session department role fine")
       .skip(offset)
       .limit(limit);
 

@@ -281,6 +281,19 @@ export const joinWaitlist = async (req, res) => {
       });
     }
 
+    // Check active borrowed books count (cannot join waitlist if active loans >= 3)
+    const borrowedCount = await IssuedBook.countDocuments({
+      user: user._id,
+      status: { $in: ["borrowed", "overdue"] },
+    });
+    if (borrowedCount >= 3) {
+      return res.status(409).json({
+        success: false,
+        message: "Borrowing limit (3) reached. You cannot join the waitlist until you return current books.",
+        data: { borrowedCount },
+      });
+    }
+
     // Check already issued
     const alreadyIssued = await IssuedBook.findOne({
       user: user._id,
