@@ -34,14 +34,7 @@ export const createStudentAuthentication = async (req, res) => {
             });
         }
 
-        const existingName = await StudentAuthentication.findOne({ name });
-
-        if (existingName) {
-            return res.status(409).json({
-                success: false,
-                message: 'Student authentication with this name already exists'
-            });
-        }
+       
 
         const newStudentAuthentication = new StudentAuthentication({
             name,
