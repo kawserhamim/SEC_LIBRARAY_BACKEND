@@ -16,6 +16,7 @@ import {
     getUserStats,
     getBookStats,
     getIssueStats,
+    searchRegisteredStudents,  
     getReservationStats,
 } from "../controllers/admin-access-controllers.js";
 
@@ -48,7 +49,10 @@ router.get("/books/search", searchBook);
 // Student management
 
 router.get("/students", getAllStudent);
+
 router.post("/students/search", searchStudent);
+
+router.get("/students/search", searchRegisteredStudents); 
 
 
 // Issue and return

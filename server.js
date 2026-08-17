@@ -4,6 +4,7 @@ import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
 import { testRedisConnection } from "./src/config/redis.js";
 import { startExpireReservationsCron } from "./src/cron/expireReservations.js";
+import { startOverdueIssuedBooksCron } from "./src/cron/overdueIssuedBooks.js";
 import { startWaitlistQueue } from "./src/queues/waitlist-queue.js";
 
 async function bootstrap() {
@@ -20,6 +21,9 @@ async function bootstrap() {
 
   // Start the cron job that expires pending reservations every minute.
   startExpireReservationsCron();
+
+  // Start the cron job that marks overdue issued books every minute.
+  startOverdueIssuedBooksCron();
 
   app.listen(process.env.PORT, () => {
     console.log(
