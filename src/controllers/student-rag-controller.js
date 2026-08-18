@@ -4,7 +4,7 @@ import { askLibraryAssistant, indexRagDocuments } from "../services/student-rag-
  * Smart Search (RAG Chatbot Controller)
  */
 
-const chatCache = new NodeCache({ stdTTL: 60 * 60 * 1 }); // 1 hour
+
 
 export const getSmartSearchResults = async (req, res) => {
   try {

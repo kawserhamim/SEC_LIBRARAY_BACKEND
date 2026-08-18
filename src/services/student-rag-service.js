@@ -6,7 +6,7 @@ import Groq from "groq-sdk";
 import fs from "fs";
 import path from "path";
 import NodeCache from "node-cache";
-import { me } from "../controllers/user-register-controller";
+
 
 
 // ===============================
@@ -26,6 +26,8 @@ const groq = new Groq({ apiKey: GROQ_API_KEY || "" });
 // Prefer gemini-embedding-2-preview, fallback to gemini-embedding-001
 const EMBEDDING_MODELS = ["gemini-embedding-2-preview", "gemini-embedding-001"];
 const GROQ_CHAT_MODEL = "openai/gpt-oss-120b";
+
+const MAX_HISTORY_MESSAGES = 10;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -158,7 +160,7 @@ export async function searchSimilarDocuments(query, limit = 4) {
 // ===============================
 
 const chatCache = new NodeCache({ stdTTL: 60 * 60 *  1}); //1hrs
-export async function askLibraryAssistant(threadId, userInput) {
+export async function askLibraryAssistant( userInput,threadId,) {
   const cacheKey = threadId;
   const query = (userInput || "").trim();
   if (!query) {
@@ -201,7 +203,10 @@ export async function askLibraryAssistant(threadId, userInput) {
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
-    chatCache.set(cacheKey, [...messages, { role: "assistant", content: answer }]);
+    const updatedMessages = [...messages, { role: "assistant", content: answer }].slice(
+    -MAX_HISTORY_MESSAGES
+  );
+  chatCache.set(cacheKey, updatedMessages);
   return answer;
 }
 
