@@ -32,14 +32,14 @@ export const enrichmentSchema = z.object({
         category: z.string().trim().min(2, "category name too short").max(60, "category name too long"),
         subtopics: z
           .array(z.string().trim().min(2, "subtopic too short").max(60, "subtopic too long"))
-          .min(1, "each category needs at least 1 subtopic")
+          .min(2, "each category needs at least 2 subtopics")
           .transform(dedupeCaseInsensitive)
-          .refine((arr) => arr.length >= 1, {
-            message: "each category needs at least 1 distinct subtopic",
+          .refine((arr) => arr.length >= 2, {
+            message: "each category needs at least 2 distinct subtopics",
           }),
       })
     )
-    .min(2, "need at least 2 topic categories")
+    .min(3, "need at least 3 topic categories")
     .transform((categories) => {
       const seen = new Set();
       return categories.filter((c) => {
@@ -49,8 +49,8 @@ export const enrichmentSchema = z.object({
         return true;
       });
     })
-    .refine((arr) => arr.length >= 2, {
-      message: "need at least 2 distinct topic categories after removing duplicates",
+    .refine((arr) => arr.length >= 3, {
+      message: "need at least 3 distinct topic categories after removing duplicates",
     }),
 });
 
