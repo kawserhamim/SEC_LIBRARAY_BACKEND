@@ -5,6 +5,7 @@ import {
   deleteBook,
   getBooksForAdmin,
   searchBook,
+  regenerateBookEnrichment,
   getAllStudent,
   searchStudent,
   issueReservedBook,
@@ -42,6 +43,7 @@ router.patch("/books/:id", updateBook);
 router.delete("/books/:id", deleteBook);
 router.get("/books", getBooksForAdmin);
 router.get("/books/search", searchBook);
+router.post("/books/:id/regenerate-enrichment", regenerateBookEnrichment);
 
 // Students
 router.get("/students", getAllStudent);

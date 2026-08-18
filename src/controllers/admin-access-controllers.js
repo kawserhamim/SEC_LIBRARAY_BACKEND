@@ -3,6 +3,7 @@ import User from "../models/user-auth-models.js";
 import { ReserveBook } from "../models/reserve-book.js";
 import { IssuedBook } from "../models/issuebook-model.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
+import { enqueueBookEnrichment } from "../queues/enrichment-queue.js";
 import { buildBookSearchFilter } from "../utils/book-search.js";
 
 const ALLOWED_CATEGORIES = [
@@ -89,6 +90,8 @@ export const addBook = async (req, res) => {
         }
         : {}),
     });
+
+    enqueueBookEnrichment(book._id);
 
     return res.status(201).json({
       success: true,
@@ -210,6 +213,14 @@ export const updateBook = async (req, res) => {
       }
     }
 
+    // Title/authors/isbn changing makes the existing AI-generated description
+    // stale — reset enrichment so it regenerates against the new identity.
+    const identityChanged = has("title") || has("authors") || has("author") || has("isbn");
+    if (identityChanged) {
+      setOps["aiEnrichment.status"] = "pending";
+      setOps["aiEnrichment.statusUpdatedAt"] = new Date();
+    }
+
     if (Object.keys(setOps).length === 0 && Object.keys(unsetOps).length === 0) {
       const current = await Book.findById(id);
       if (!current) return res.status(404).json({ success: false, message: "Book not found" });
@@ -237,6 +248,10 @@ export const updateBook = async (req, res) => {
       enqueueWaitlistAvailability(book._id, availableCopies - preUpdateAvailableCopies);
     }
 
+    if (identityChanged) {
+      enqueueBookEnrichment(book._id);
+    }
+
     return res.status(200).json({ success: true, message: "Book updated", book });
   } catch (error) {
     if (error?.code === 11000) {
@@ -249,6 +264,33 @@ export const updateBook = async (req, res) => {
       return res.status(400).json({ success: false, message: `Invalid value for ${error.path}` });
     }
     return res.status(500).json({ success: false, message: "Error updating book", error: error.message });
+  }
+};
+
+// POST /api/admin/access/books/:id/regenerate-enrichment
+export const regenerateBookEnrichment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const book = await Book.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          "aiEnrichment.status": "pending",
+          "aiEnrichment.statusUpdatedAt": new Date(),
+          "aiEnrichment.lastError": null,
+        },
+      },
+      { new: true }
+    );
+
+    if (!book) return res.status(404).json({ success: false, message: "Book not found" });
+
+    enqueueBookEnrichment(book._id);
+
+    return res.status(202).json({ success: true, message: "Enrichment regeneration queued", book });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error queuing enrichment", error: error.message });
   }
 };
 
@@ -281,7 +323,7 @@ export const getBooksForAdmin = async (req, res) => {
 
     const totalBooks = await Book.countDocuments(filter);
     const books = await Book.find(filter)
-      .select("title authors isbn totalCopies availableCopies category coverImage")
+      .select("title authors isbn totalCopies availableCopies category coverImage description topics aiEnrichment.status aiEnrichment.confidence")
       .skip(offset)
       .limit(limit);
 
@@ -315,7 +357,7 @@ export const searchBook = async (req, res) => {
 
     const totalMatches = await Book.countDocuments(filter);
     const books = await Book.find(filter)
-      .select("title authors isbn totalCopies availableCopies category coverImage")
+      .select("title authors isbn totalCopies availableCopies category coverImage description topics aiEnrichment.status aiEnrichment.confidence")
       .skip(offset)
       .limit(limit);
 
