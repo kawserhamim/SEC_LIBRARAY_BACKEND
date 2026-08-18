@@ -1,5 +1,30 @@
 import ResearchPaper from "../models/research-paper-model.js";
 
+// Looks for an existing paper with the same paperLink or the same doi.
+// Both are checked regardless of status (pending/approved/rejected) so a
+// paper can't be re-submitted or re-created while an earlier copy already
+// exists in any state. excludeId lets update flows skip the record being
+// edited so it doesn't collide with itself.
+const findDuplicateResearchPaper = async ({ paperLink, doi }, excludeId) => {
+  const orConditions = [];
+  if (paperLink && paperLink.trim()) orConditions.push({ paperLink: paperLink.trim() });
+  if (doi && doi.trim()) orConditions.push({ doi: doi.trim() });
+  if (orConditions.length === 0) return null;
+
+  const filter = { $or: orConditions };
+  if (excludeId) filter._id = { $ne: excludeId };
+
+  return ResearchPaper.findOne(filter).lean();
+};
+
+const duplicateResearchPaperMessage = (duplicate, { paperLink, doi }) => {
+  const matchedOnDoi = Boolean(doi && doi.trim() && duplicate.doi === doi.trim());
+  const matchedOnLink = Boolean(paperLink && duplicate.paperLink === paperLink.trim());
+  if (matchedOnDoi && matchedOnLink) return "A research paper with this paper link and DOI already exists";
+  if (matchedOnDoi) return "A research paper with this DOI already exists";
+  return "A research paper with this paper link already exists";
+};
+
 // User (Student) submits a research paper (saved as pending)
 export const submitResearchPaperByUser = async (req, res) => {
   try {
@@ -37,6 +62,14 @@ export const submitResearchPaperByUser = async (req, res) => {
           message: "Every author must have a name",
         });
       }
+    }
+
+    const duplicate = await findDuplicateResearchPaper({ paperLink, doi });
+    if (duplicate) {
+      return res.status(409).json({
+        success: false,
+        message: duplicateResearchPaperMessage(duplicate, { paperLink, doi }),
+      });
     }
 
     const userId = req.user?.id || req.user?._id;
@@ -119,6 +152,14 @@ export const createResearchPaper = async (req, res) => {
           message: "Every author must have a name",
         });
       }
+    }
+
+    const duplicate = await findDuplicateResearchPaper({ paperLink, doi });
+    if (duplicate) {
+      return res.status(409).json({
+        success: false,
+        message: duplicateResearchPaperMessage(duplicate, { paperLink, doi }),
+      });
     }
 
     const adminId = req.user?.id || req.user?._id;
@@ -588,6 +629,16 @@ export const updateResearchPaper = async (req, res) => {
       isPublished,
       status,
     } = req.body;
+
+    if (paperLink || doi) {
+      const duplicate = await findDuplicateResearchPaper({ paperLink, doi }, id);
+      if (duplicate) {
+        return res.status(409).json({
+          success: false,
+          message: duplicateResearchPaperMessage(duplicate, { paperLink, doi }),
+        });
+      }
+    }
 
     const paper = await ResearchPaper.findByIdAndUpdate(
       id,
