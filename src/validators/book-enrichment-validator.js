@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+function dedupeCaseInsensitive(arr) {
+  const seen = new Set();
+  return arr.filter((item) => {
+    const key = item.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 // Hard gate between raw LLM output and what's allowed onto a Book document.
 // Every book that reaches aiEnrichment.status === "completed" must satisfy
 // these exact bounds, so the RAG indexing pipeline can treat all books uniformly.
@@ -15,21 +25,32 @@ export const enrichmentSchema = z.object({
     .trim()
     .min(400, "description too short (min 400 characters)")
     .max(1200, "description too long (max 1200 characters)"),
+  // Grouped topics, e.g. { category: "Sorting Algorithms", subtopics: ["Quick Sort", "Merge Sort", "Bubble Sort"] }
   topics: z
-    .array(z.string().trim().min(2, "topic too short").max(60, "topic too long"))
-    .min(3, "need at least 3 topics")
-    .max(8, "no more than 8 topics")
-    .transform((arr) => {
+    .array(
+      z.object({
+        category: z.string().trim().min(2, "category name too short").max(60, "category name too long"),
+        subtopics: z
+          .array(z.string().trim().min(2, "subtopic too short").max(60, "subtopic too long"))
+          .min(1, "each category needs at least 1 subtopic")
+          .transform(dedupeCaseInsensitive)
+          .refine((arr) => arr.length >= 1, {
+            message: "each category needs at least 1 distinct subtopic",
+          }),
+      })
+    )
+    .min(2, "need at least 2 topic categories")
+    .transform((categories) => {
       const seen = new Set();
-      return arr.filter((topic) => {
-        const key = topic.toLowerCase();
+      return categories.filter((c) => {
+        const key = c.category.toLowerCase();
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
     })
-    .refine((arr) => arr.length >= 3, {
-      message: "need at least 3 distinct topics after removing duplicates",
+    .refine((arr) => arr.length >= 2, {
+      message: "need at least 2 distinct topic categories after removing duplicates",
     }),
 });
 

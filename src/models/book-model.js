@@ -75,8 +75,15 @@ const bookSchema = new mongoose.Schema(
       trim: true,
       maxlength: [2000, "Description cannot exceed 2000 characters"],
     },
+    // Grouped topics, e.g. { category: "Sorting Algorithms", subtopics: ["Quick Sort", "Merge Sort", "Bubble Sort"] }
     topics: {
-      type: [String],
+      type: [
+        {
+          category: { type: String, required: true, trim: true },
+          subtopics: { type: [String], default: [] },
+          _id: false,
+        },
+      ],
       default: [],
     },
     aiEnrichment: {

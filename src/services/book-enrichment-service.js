@@ -40,7 +40,9 @@ function buildPrompt({ title, authors, category, grounding }) {
 
   const system = `You are a university library cataloguer. Given a book's title, authors, category, and any available source material, produce a JSON object with exactly two fields:
 - "description": a factual, student-facing description of the book (what it covers, who it's for), between 400 and 1200 characters.
-- "topics": an array of 3 to 8 short topic phrases (2-60 characters each) a student might search for when looking to learn a subject this book covers (e.g. "Binary Search", "Graph Algorithms"). No duplicates.
+- "topics": an array of topic groups a student might search for when looking to learn something this book covers. Each group is an object: { "category": "<broad subject area, 2-60 characters>", "subtopics": ["<specific topic, 2-60 characters>", ...] }. Include at least 2 categories, each with at least 1 subtopic. No duplicate categories, no duplicate subtopics within a category.
+
+Example shape (content is illustrative only, not real): { "topics": [ { "category": "Sorting Algorithms", "subtopics": ["Quick Sort", "Merge Sort", "Bubble Sort"] }, { "category": "Graph Algorithms", "subtopics": ["DFS", "BFS"] } ] }
 
 Respond with ONLY a JSON object matching that shape, nothing else.`;
 
