@@ -59,8 +59,6 @@ researchPaperSchema.index({
 researchPaperSchema.index({ category: 1 });
 researchPaperSchema.index({ "authors.name": 1 });
 researchPaperSchema.index({ publicationDate: -1 });
-researchPaperSchema.index({ status: 1 });
-researchPaperSchema.index({ "submittedBy.userId": 1 });
 
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
