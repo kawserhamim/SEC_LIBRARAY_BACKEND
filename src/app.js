@@ -10,6 +10,14 @@ import studentAuthenticationRoutes from "./routes/student-authenticaton-route.js
 import userBookAccessRoutes from "./routes/user-book-access-route.js";
 import notificationRoutes from "./routes/notification-routes.js";
 import studentRagRoutes from "./routes/student-rag-routes.js";
+import { upload } from "./controllers/student-rag-controller.js";
+
+
+
+
+
+
+
 
 const app = express();
 
@@ -19,6 +27,10 @@ app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   next();
 });
+
+
+
+
 const allowedOrigins = [process.env.CLIENT_URL, process.env.STUDENT_CLIENT_URL].filter(Boolean);
 app.use(
   cors({
@@ -32,6 +44,11 @@ app.use(
     credentials: true,
   })
 );
+
+
+
+upload();
+
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
