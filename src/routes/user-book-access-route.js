@@ -17,10 +17,12 @@ import {
   getMyResearchPapers,
 } from "../controllers/research-paper-controller.js";
 import { authenticate } from "../middlewares/auth-middleware.js";
+import { studentRateLimiter } from "../middlewares/rate-limiter.js";
 
 const router = express.Router();
 
 router.use(authenticate);
+router.use(studentRateLimiter);
 
 // Books
 router.get("/books", getBooksForStudent);
