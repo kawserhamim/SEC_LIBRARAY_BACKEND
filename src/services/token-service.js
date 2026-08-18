@@ -16,17 +16,27 @@ export function verifyAuthToken(token) {
 }
 
 export function setAuthCookie(res, token) {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    // SameSite=None requires Secure — browsers silently drop the cookie
+    // otherwise. Production frontend/backend live on different domains
+    // (cross-site, needs None+Secure over HTTPS); local dev is different
+    // ports on localhost (same-site), so Lax works over plain HTTP.
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     maxAge: SESSION_TTL_MS,
     path: "/",
   });
 }
 
 export function clearAuthCookie(res) {
-  res.clearCookie(COOKIE_NAME, { path: "/" });
+  const isProd = process.env.NODE_ENV === "production";
+  res.clearCookie(COOKIE_NAME, {
+    path: "/",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+  });
 }
 
 export function getAuthTokenFromCookie(req) {

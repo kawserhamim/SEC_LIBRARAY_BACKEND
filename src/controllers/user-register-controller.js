@@ -3,53 +3,8 @@ import { loginUserSchema, changePasswordSchema } from "../validators/login-valid
 import { registerUser, loginUser, changePassword as changePasswordService } from "../services/user-register-service.js";
 import { signAuthToken, setAuthCookie, clearAuthCookie } from "../services/token-service.js";
 import User from "../models/user-auth-models.js";
-
-function publicUser(user) {
-  return {
-    id: user._id,
-    name: user.name,
-    regNo: user.regNo,
-    email: user.email,
-    phone: user.phone,
-    department: user.department,
-    Session: user.Session,
-    gender: user.gender,
-    role: user.role,
-    fine: user.fine,
-  };
-}
-
-function handleError(res, error, label) {
-  console.error(`${label} error:`, error);
-
-  if (error?.name === "ZodError") {
-    return res.status(400).json({
-      success: false,
-      message: "Validation failed",
-      errors: error.flatten().fieldErrors,
-    });
-  }
-
-  if (error?.name === "ValidationError") {
-    return res.status(400).json({
-      success: false,
-      message: "Database validation failed",
-    });
-  }
-
-  if (error?.code === 11000) {
-    return res.status(409).json({
-      success: false,
-      message: "Resource already exists",
-    });
-  }
-
-  const statusCode = error?.statusCode || 500;
-  return res.status(statusCode).json({
-    success: false,
-    message: statusCode === 500 ? "Internal server error" : error.message,
-  });
-}
+import { publicUser } from "../utils/public-user.js";
+import { handleAuthError as handleError } from "../utils/handle-auth-error.js";
 
 export const register = async (req, res) => {
   try {

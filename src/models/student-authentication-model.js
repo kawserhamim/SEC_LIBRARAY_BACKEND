@@ -8,6 +8,7 @@ const studentAuthenticationSchema = new mongoose.Schema(
     gender: { type: String, enum: ["Male", "Female", "Hijra"], required: true },
     Session: { type: String, required: true, trim: true },
     department: { type: String, required: true, trim: true },
+    firebaseUid: { type: String, unique: true, sparse: true, trim: true },
   },
   { timestamps: true }
 );
