@@ -3,9 +3,12 @@ import { askLibraryAssistant, indexRagDocuments } from "../services/student-rag-
 /**
  * Smart Search (RAG Chatbot Controller)
  */
+
+const chatCache = new NodeCache({ stdTTL: 60 * 60 * 1 }); // 1 hour
+
 export const getSmartSearchResults = async (req, res) => {
   try {
-    const { input } = req.body;
+    const { input , threadId } = req.body;
 
     if (!input || !input.trim()) {
       return res.status(400).json({
@@ -14,7 +17,8 @@ export const getSmartSearchResults = async (req, res) => {
       });
     }
 
-    const answer = await askLibraryAssistant(input);
+
+    const answer = await askLibraryAssistant(input, threadId);
 
     return res.status(200).json({
       success: true,

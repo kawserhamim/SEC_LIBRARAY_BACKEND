@@ -1,11 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import Groq from "groq-sdk";
 import fs from "fs";
 import path from "path";
-import dotenv from "dotenv";
+import NodeCache from "node-cache";
+import { me } from "../controllers/user-register-controller";
 
-dotenv.config();
 
 // ===============================
 // Configuration
@@ -26,6 +28,8 @@ const EMBEDDING_MODELS = ["gemini-embedding-2-preview", "gemini-embedding-001"];
 const GROQ_CHAT_MODEL = "openai/gpt-oss-120b";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
 
 const SYSTEM_PROMPT = `
 You are an AI Library Assistant that helps students discover which books cover the topics or concepts they want to learn.
@@ -153,7 +157,9 @@ export async function searchSimilarDocuments(query, limit = 4) {
 // RAG Query Handler
 // ===============================
 
-export async function askLibraryAssistant(userInput) {
+const chatCache = new NodeCache({ stdTTL: 60 * 60 *  1}); //1hrs
+export async function askLibraryAssistant(threadId, userInput) {
+  const cacheKey = threadId;
   const query = (userInput || "").trim();
   if (!query) {
     throw new Error("Query input cannot be empty.");
@@ -167,25 +173,36 @@ export async function askLibraryAssistant(userInput) {
   }
 
   const contextText = contextChunks.join("\n\n---\n\n");
-
+  const oldMessages = chatCache.get(cacheKey) ?? [];
+   const messages = [
+    ...oldMessages,
+    {
+      role: "user",
+      content: query,
+    },
+  ];
   // Call Groq LLM
   const completion = await groq.chat.completions.create({
     model: GROQ_CHAT_MODEL,
     temperature: 0.2,
     messages: [
+      
       {
         role: "system",
         content: `${SYSTEM_PROMPT}\n\n## Book Context:\n${contextText}`,
       },
-      {
-        role: "user",
-        content: query,
-      },
+    ...messages
     ],
+   
   });
 
   const rawAnswer = completion.choices[0]?.message?.content || "";
-  return rawAnswer.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+  const answer = rawAnswer
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+    chatCache.set(cacheKey, [...messages, { role: "assistant", content: answer }]);
+  return answer;
 }
 
 // ===============================
