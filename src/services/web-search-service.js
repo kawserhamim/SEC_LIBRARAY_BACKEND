@@ -5,10 +5,15 @@ import { tavilySearch, isTavilyConfigured } from "../config/tavily.js";
 export async function searchBookOnWeb({ title, authors, isbn }) {
   if (!isTavilyConfigured()) return null;
 
-  const query = [title, authors?.join(", "), isbn].filter(Boolean).join(" ");
+  // Biased toward structural content (chapters/ToC) rather than just a blurb —
+  // a plain "<title> <author>" query tends to return reviews/marketing copy
+  // that's too shallow to extract more than 1-2 topics from.
+  const query = [title, authors?.join(", "), isbn, "table of contents chapters topics covered"]
+    .filter(Boolean)
+    .join(" ");
 
   try {
-    const result = await tavilySearch(query, { maxResults: 5 });
+    const result = await tavilySearch(query, { maxResults: 8 });
     const snippets = (result?.results || [])
       .map((r) => r.content)
       .filter(Boolean);
