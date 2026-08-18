@@ -9,6 +9,7 @@ import adminAccessRoutes from "./routes/admin-access-route.js";
 import studentAuthenticationRoutes from "./routes/student-authenticaton-route.js";
 import userBookAccessRoutes from "./routes/user-book-access-route.js";
 import notificationRoutes from "./routes/notification-routes.js";
+import studentRagRoutes from "./routes/student-rag-routes.js";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/admin", adminRegisterRoutes);
 app.use("/api/admin/access", adminAccessRoutes);
 app.use("/api/main/student", studentAuthenticationRoutes);
 app.use("/api/student/access", userBookAccessRoutes);
+app.use("/api/student/rag", studentRagRoutes);
 app.use("/api/student", notificationRoutes);
 
 // 404 handler

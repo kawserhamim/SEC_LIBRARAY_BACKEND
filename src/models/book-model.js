@@ -136,7 +136,7 @@ bookSchema.pre("save", async function () {
 bookSchema.index({ title: 1 });
 bookSchema.index({ category: 1 });
 bookSchema.index({ authors: 1 });
-bookSchema.index({ title: "text", authors: "text" });
+bookSchema.index({ title: "text", authors: "text" }); //
 bookSchema.index({ "aiEnrichment.status": 1 });
 
 export const Book = mongoose.model("Book", bookSchema);
