@@ -23,6 +23,27 @@ const researchPaperSchema = new mongoose.Schema(
     conferenceName: { type: String, trim: true },
     doi: { type: String, trim: true, unique: true, sparse: true },
     isPublished: { type: Boolean, default: true },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+      index: true,
+    },
+    submittedBy: {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
+      name: { type: String, trim: true },
+      email: { type: String, trim: true },
+      regNo: { type: String, trim: true },
+    },
+    approvedBy: {
+      adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+      approvedAt: { type: Date },
+    },
+    rejectedBy: {
+      adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+      rejectedAt: { type: Date },
+      reason: { type: String, trim: true },
+    },
   },
   { timestamps: true }
 );
@@ -38,6 +59,8 @@ researchPaperSchema.index({
 researchPaperSchema.index({ category: 1 });
 researchPaperSchema.index({ "authors.name": 1 });
 researchPaperSchema.index({ publicationDate: -1 });
+researchPaperSchema.index({ status: 1 });
+researchPaperSchema.index({ "submittedBy.userId": 1 });
 
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 

@@ -13,6 +13,8 @@ import {
   getAllResearchPapers,
   getResearchPaperById,
   searchResearchPapers,
+  submitResearchPaperByUser,
+  getMyResearchPapers,
 } from "../controllers/research-paper-controller.js";
 import { authenticate } from "../middlewares/auth-middleware.js";
 
@@ -37,6 +39,10 @@ router.delete("/books/:bookId/waitlist", cancelWaitlist);
 router.get("/issued", getMyIssuedBooks);
 
 // Research Papers
+router.post("/research-papers", submitResearchPaperByUser);
+router.post("/research-papers/create", submitResearchPaperByUser);
+router.get("/research-papers/my-papers", getMyResearchPapers);
+router.get("/research-papers/my-submissions", getMyResearchPapers);
 router.get("/research-papers", getAllResearchPapers);
 router.get("/research-papers/search", searchResearchPapers);
 router.get("/research-papers/:id", getResearchPaperById);

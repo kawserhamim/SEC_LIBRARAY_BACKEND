@@ -21,9 +21,12 @@ import {
 } from "../controllers/admin-access-controllers.js";
 import {
   createResearchPaper,
-  getAllResearchPapers,
+  getAllResearchPapersForAdmin,
+  getPendingResearchPapers,
   getResearchPaperById,
   searchResearchPapers,
+  approveResearchPaper,
+  rejectResearchPaper,
   updateResearchPaper,
   deleteResearchPaper,
 } from "../controllers/research-paper-controller.js";
@@ -61,12 +64,16 @@ router.get("/stats/issued", getIssueStats);
 router.get("/stats/reservations", getReservationStats);
 router.get("/stats/overdue", getOverdueIssueStats);
 
-
 // Research papers
+router.get("/research-papers/pending", getPendingResearchPapers);
 router.get("/research-papers/search", searchResearchPapers);
-router.get("/research-papers", getAllResearchPapers);
+router.get("/research-papers", getAllResearchPapersForAdmin);
 router.get("/research-papers/:id", getResearchPaperById);
 router.post("/research-papers/create", createResearchPaper);
+router.post("/research-papers/pending/:id/approve", approveResearchPaper);
+router.post("/research-papers/approve/:id", approveResearchPaper);
+router.post("/research-papers/pending/:id/reject", rejectResearchPaper);
+router.post("/research-papers/reject/:id", rejectResearchPaper);
 router.patch("/research-papers/:id", updateResearchPaper);
 router.delete("/research-papers/:id", deleteResearchPaper);
 

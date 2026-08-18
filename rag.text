@@ -1,0 +1,2438 @@
+==========================================================================================
+MASTER ACADEMIC REFERENCE LIBRARY
+Core Textbooks & Concept Index — Engineering, Science & Humanities
+==========================================================================================
+
+CONTENTS:
+  1. Computer Science & Engineering (CSE)
+  2. Electrical & Electronic Engineering (EEE)
+  3. Civil Engineering (CE)
+  4. General Science & Humanities (Physics, Chemistry, Mathematics, English, Economics)
+
+
+##########################################################################################
+COMPUTER SCIENCE & ENGINEERING (CSE)
+##########################################################################################
+
+------------------------------------------------------------------------------------------
+01. Data Structures & Algorithms
+Book: Introduction to Algorithms (CLRS)
+Author(s): Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein
+------------------------------------------------------------------------------------------
+Index Concept
+01    Algorithm Fundamentals — correctness, running time, space complexity
+02    Asymptotic Analysis — Big-O, Big-Ω, Big-Θ
+03    Recurrences — recurrence relations, substitution, recursion tree, Master Theorem
+04    Sorting — insertion, merge, heap, quick, counting, radix, bucket sort
+05    Searching — linear search, binary search
+06    Basic Data Structures — arrays, linked lists, stacks, queues
+07    Hashing — hash tables, collision handling
+08    Trees — binary trees, BST, Red-Black trees, B-Trees
+09    Heaps — min heap, max heap, priority queue
+10    Divide & Conquer — divide, solve, combine
+11    Greedy Algorithms — activity selection, fractional knapsack, Huffman
+12    Dynamic Programming — 0/1 knapsack, LCS, matrix-chain, rod cutting
+13    Graph Algorithms — BFS, DFS, topological sorting
+14    Shortest Paths — Dijkstra, Bellman-Ford, Floyd-Warshall
+15    MST — Kruskal, Prim
+16    String Algorithms — string matching, suffix arrays
+17    Network Flow
+18    Computational Geometry
+19    Randomized Algorithms
+20    Approximation Algorithms
+21    NP-Completeness
+22    Advanced — bipartite matching, online algorithms, potential functions
+
+------------------------------------------------------------------------------------------
+02. Database Management Systems
+Book: Database System Concepts
+Author(s): Abraham Silberschatz, Henry F. Korth, S. Sudarshan
+------------------------------------------------------------------------------------------
+Index Concept
+01    Database Fundamentals — database, DBMS, architecture
+02    Data Models — relational, object-oriented, other models
+03    Relational Model — relation, tuple, attribute, domain
+04    Keys — primary, candidate, super, foreign keys
+05    Constraints — integrity, referential integrity
+06    SQL — SELECT, INSERT, UPDATE, DELETE
+07    SQL Queries — JOIN, GROUP BY, HAVING, subqueries
+08    Views — creating and using database views
+09    ER Model — entity, attribute, relationship
+10    ER Design — cardinality, participation, ER diagrams
+11    Functional Dependency
+12    Normalization — 1NF, 2NF, 3NF, BCNF
+13    Decomposition — lossless join, dependency preservation
+14    Transactions
+15    ACID — atomicity, consistency, isolation, durability
+16    Concurrency Control
+17    Serializability
+18    Locking — shared/exclusive locks, two-phase locking
+19    Deadlocks
+20    Storage — disk, blocks, records, file organization
+21    Buffer Management
+22    Indexing — primary, secondary, dense, sparse
+23    B-Tree / B+ Tree
+24    Hash Indexing
+25    Query Processing
+26    Query Optimization
+27    Execution Plans
+28    Join Algorithms
+29    Distributed Databases
+30    NoSQL
+31    Data Warehousing
+32    Big Data
+
+------------------------------------------------------------------------------------------
+03. Operating Systems
+Book: Operating System Concepts
+Author(s): Abraham Silberschatz, Peter B. Galvin, Greg Gagne
+------------------------------------------------------------------------------------------
+Index Concept
+01    OS Fundamentals
+02    Kernel
+03    System Calls
+04    User Mode / Kernel Mode
+05    Processes
+06    Process States
+07    PCB — Process Control Block
+08    Process Creation / Termination
+09    Context Switching
+10    Threads
+11    User-Level / Kernel-Level Threads
+12    Multithreading
+13    CPU Scheduling
+14    FCFS
+15    SJF / SRTF
+16    Priority Scheduling
+17    Round Robin
+18    Multilevel Queue
+19    Race Conditions
+20    Critical Section
+21    Mutex
+22    Semaphore
+23    Monitor
+24    Producer-Consumer
+25    Readers-Writers
+26    Deadlock
+27    Deadlock Prevention
+28    Deadlock Avoidance
+29    Banker's Algorithm
+30    Deadlock Detection / Recovery
+31    Memory Management
+32    Paging
+33    Segmentation
+34    Page Tables
+35    TLB
+36    Virtual Memory
+37    Page Fault
+38    Page Replacement — FIFO, LRU, Optimal
+39    File Systems
+40    Inodes
+41    File Allocation
+42    Disk Scheduling
+43    I/O Systems
+44    Interrupts
+45    DMA
+46    Device Drivers
+
+------------------------------------------------------------------------------------------
+04. Computer Networks
+Book: Computer Networking: A Top-Down Approach
+Author(s): James F. Kurose, Keith W. Ross
+------------------------------------------------------------------------------------------
+Index Concept
+01    Network Fundamentals
+02    Internet Architecture
+03    Network Edge / Network Core
+04    Packet Switching
+05    Circuit Switching
+06    Network Delay
+07    Application Layer
+08    HTTP / HTTPS
+09    HTTP Methods
+10    HTTP Status Codes
+11    Cookies / Sessions
+12    DNS
+13    DNS Resolution
+14    SMTP
+15    FTP
+16    Transport Layer
+17    TCP
+18    UDP
+19    Ports
+20    Sockets
+21    Three-Way Handshake
+22    TCP Reliability
+23    Flow Control
+24    Congestion Control
+25    Network Layer
+26    IPv4
+27    IPv6
+28    IP Addressing
+29    Subnetting
+30    NAT
+31    ICMP
+32    Routing
+33    Distance Vector
+34    Link State
+35    Dijkstra
+36    OSPF
+37    BGP
+38    Link Layer
+39    Ethernet
+40    MAC Address
+41    ARP
+42    Switches
+43    VLAN
+44    TLS
+45    Network Security
+46    Firewall / VPN
+
+------------------------------------------------------------------------------------------
+05. Computer Organization & Architecture
+Book: Computer Organization and Design
+Author(s): David A. Patterson, John L. Hennessy
+------------------------------------------------------------------------------------------
+Index Concept
+01    Computer Organization
+02    Computer Architecture
+03    CPU
+04    ALU
+05    Control Unit
+06    Registers
+07    Datapath
+08    Instruction Cycle
+09    Instruction Set
+10    Opcode / Operand
+11    Assembly Language
+12    Machine Code
+13    RISC
+14    CISC
+15    Memory Hierarchy
+16    Registers
+17    Cache
+18    RAM
+19    ROM
+20    Cache Hit / Miss
+21    Cache Mapping
+22    Direct Mapping
+23    Set Associative
+24    Fully Associative
+25    CPU Performance
+26    Clock Cycle
+27    Clock Rate
+28    CPI
+29    Instruction Count
+30    CPU Time
+31    Pipelining
+32    Pipeline Hazards
+33    Data Hazard
+34    Control Hazard
+35    Structural Hazard
+36    Branch Prediction
+37    Superscalar
+38    Multicore
+39    Parallel Processing
+40    GPU
+
+------------------------------------------------------------------------------------------
+06. Object-Oriented Programming
+Book: Head First Object-Oriented Analysis and Design
+Author(s): Brett McLaughlin, Gary Pollice, David West
+------------------------------------------------------------------------------------------
+Index Concept
+01    Class
+02    Object
+03    Attribute
+04    Method
+05    Constructor
+06    Encapsulation
+07    Abstraction
+08    Inheritance
+09    Polymorphism
+10    Association
+11    Aggregation
+12    Composition
+13    Dependency
+14    Interface
+15    Abstract Class
+16    Method Overloading
+17    Method Overriding
+18    Access Modifiers
+19    Static Members
+20    SOLID Principles
+21    DRY
+22    KISS
+23    Separation of Concerns
+24    Singleton Pattern
+25    Factory Pattern
+26    Observer Pattern
+27    Strategy Pattern
+28    Adapter Pattern
+29    Decorator Pattern
+
+------------------------------------------------------------------------------------------
+07. Discrete Mathematics
+Book: Discrete Mathematics and Its Applications
+Author(s): Kenneth H. Rosen
+------------------------------------------------------------------------------------------
+Index Concept
+01    Propositional Logic
+02    Logical Operators
+03    Truth Tables
+04    Predicates
+05    Quantifiers
+06    Direct Proof
+07    Proof by Contradiction
+08    Contrapositive
+09    Mathematical Induction
+10    Sets
+11    Subsets
+12    Union / Intersection
+13    Cartesian Product
+14    Relations
+15    Reflexive / Symmetric / Transitive
+16    Equivalence Relations
+17    Functions
+18    Injective / Surjective / Bijective
+19    Permutations
+20    Combinations
+21    Pigeonhole Principle
+22    Inclusion-Exclusion
+23    Graph Theory
+24    Trees
+25    Paths / Cycles
+26    Graph Coloring
+27    Number Theory
+28    GCD
+29    Modular Arithmetic
+30    Cryptography
+
+------------------------------------------------------------------------------------------
+08. Compiler Design
+Book: Compilers: Principles, Techniques, and Tools (The Dragon Book)
+Author(s): Alfred V. Aho, Monica S. Lam, Ravi Sethi, Jeffrey D. Ullman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Compiler Fundamentals
+02    Compiler vs Interpreter
+03    Compilation Process
+04    Lexical Analysis
+05    Tokens
+06    Lexemes
+07    Regular Expressions
+08    DFA
+09    NFA
+10    Syntax Analysis
+11    Context-Free Grammar
+12    Parse Tree
+13    LL Parsing
+14    LR Parsing
+15    SLR
+16    LALR
+17    Semantic Analysis
+18    Type Checking
+19    Scope
+20    Symbol Table
+21    Intermediate Representation
+22    Three-Address Code
+23    Quadruples
+24    Code Optimization
+25    Constant Folding
+26    Dead Code Elimination
+27    Common Subexpression Elimination
+28    Loop Optimization
+29    Code Generation
+30    Register Allocation
+31    Instruction Selection
+
+------------------------------------------------------------------------------------------
+09. Theory of Computation
+Book: Introduction to the Theory of Computation
+Author(s): Michael Sipser
+------------------------------------------------------------------------------------------
+Index Concept
+01    Automata Theory
+02    Finite Automata
+03    DFA
+04    NFA
+05    Regular Languages
+06    Regular Expressions
+07    Closure Properties
+08    Context-Free Grammar
+09    Parse Trees
+10    Pushdown Automata
+11    Context-Free Languages
+12    Turing Machines
+13    Decidability
+14    Recognizability
+15    Computability
+16    Complexity Theory
+17    P
+18    NP
+19    NP-Hard
+20    NP-Complete
+21    Polynomial Reduction
+
+------------------------------------------------------------------------------------------
+10. Programming Languages
+Book: Concepts of Programming Languages
+Author(s): Robert W. Sebesta
+------------------------------------------------------------------------------------------
+Index Concept
+01    Syntax
+02    Semantics
+03    Compilers
+04    Interpreters
+05    Imperative Programming
+06    Object-Oriented Programming
+07    Functional Programming
+08    Logic Programming
+09    Declarative Programming
+10    Data Types
+11    Arrays
+12    Structures
+13    Pointers
+14    References
+15    Control Flow
+16    Recursion
+17    Functions
+18    Parameters
+19    Scope
+20    Binding
+21    Closures
+22    Higher-Order Functions
+23    Stack
+24    Heap
+25    Garbage Collection
+26    Memory Management
+
+------------------------------------------------------------------------------------------
+11. Software Engineering
+Book: Software Engineering
+Author(s): Ian Sommerville
+------------------------------------------------------------------------------------------
+Index Concept
+01    Software Engineering Fundamentals
+02    Software Processes
+03    Waterfall Model
+04    Incremental Development
+05    Spiral Model
+06    Agile
+07    Scrum
+08    Requirements Engineering
+09    Functional Requirements
+10    Non-Functional Requirements
+11    Software Architecture
+12    Component Design
+13    Interfaces
+14    Coupling
+15    Cohesion
+16    Unit Testing
+17    Integration Testing
+18    System Testing
+19    Acceptance Testing
+20    Regression Testing
+21    Software Maintenance
+22    Risk Management
+23    Project Management
+24    Software Quality
+
+------------------------------------------------------------------------------------------
+12. Distributed Systems
+Book: Distributed Systems: Principles and Paradigms
+Author(s): Andrew S. Tanenbaum, Maarten van Steen
+------------------------------------------------------------------------------------------
+Index Concept
+01    Distributed Systems Fundamentals
+02    Nodes
+03    Distributed Communication
+04    RPC
+05    Message Passing
+06    REST
+07    Clock Synchronization
+08    Logical Clocks
+09    Lamport Clock
+10    Vector Clock
+11    Distributed Mutual Exclusion
+12    Leader Election
+13    Consensus
+14    Distributed Transactions
+15    Two-Phase Commit
+16    Replication
+17    Consistency
+18    Quorum
+19    Fault Tolerance
+20    Failure Detection
+21    Recovery
+22    Distributed Storage
+23    Distributed File Systems
+24    Distributed Hash Tables
+
+------------------------------------------------------------------------------------------
+13. System Design / Data-Intensive Systems
+Book: Designing Data-Intensive Applications (DDIA)
+Author(s): Martin Kleppmann
+------------------------------------------------------------------------------------------
+Index Concept
+01    Scalability
+02    Reliability
+03    Availability
+04    Maintainability
+05    Performance
+06    Relational Databases
+07    NoSQL Databases
+08    Document Databases
+09    Key-Value Stores
+10    Column Databases
+11    Graph Databases
+12    Storage Engines
+13    B-Trees
+14    LSM Trees
+15    SSTables
+16    Replication
+17    Partitioning
+18    Sharding
+19    Consistency
+20    Distributed Transactions
+21    Message Queues
+22    Event Streaming
+23    Pub/Sub
+24    Caching
+25    Cache Invalidation
+26    Fault Tolerance
+27    Retry
+28    Timeout
+29    Circuit Breaker
+30    Idempotency
+
+------------------------------------------------------------------------------------------
+14. Computer Security
+Book: Computer Security: Principles and Practice
+Author(s): William Stallings, Lawrie Brown
+------------------------------------------------------------------------------------------
+Index Concept
+01    Security Fundamentals
+02    CIA Triad
+03    Confidentiality
+04    Integrity
+05    Availability
+06    Symmetric Encryption
+07    Asymmetric Encryption
+08    AES
+09    RSA
+10    Hash Functions
+11    SHA
+12    Password Hashing
+13    Authentication
+14    Authorization
+15    MFA
+16    Tokens
+17    XSS
+18    CSRF
+19    SQL Injection
+20    Session Hijacking
+21    CORS
+22    Firewall
+23    VPN
+24    TLS
+25    Secure Coding
+26    Access Control
+
+------------------------------------------------------------------------------------------
+15. Artificial Intelligence
+Book: Artificial Intelligence: A Modern Approach
+Author(s): Stuart Russell, Peter Norvig
+------------------------------------------------------------------------------------------
+Index Concept
+01    Intelligent Agents
+02    Rational Agents
+03    Agent Environment
+04    State-Space Search
+05    BFS
+06    DFS
+07    Uniform Cost Search
+08    Greedy Search
+09    A*
+10    Heuristics
+11    Minimax
+12    Alpha-Beta Pruning
+13    Logic
+14    Propositional Logic
+15    First-Order Logic
+16    Knowledge Representation
+17    Supervised Learning
+18    Unsupervised Learning
+19    Reinforcement Learning
+20    Neural Networks
+21    NLP
+22    Computer Vision
+23    Robotics
+24    Planning
+
+------------------------------------------------------------------------------------------
+16. Machine Learning
+Book: Pattern Recognition and Machine Learning
+Author(s): Christopher M. Bishop
+------------------------------------------------------------------------------------------
+Index Concept
+01    Probability
+02    Statistics
+03    Linear Algebra
+04    Optimization
+05    Probability Distributions
+06    Bayes' Theorem
+07    Maximum Likelihood
+08    Linear Regression
+09    Logistic Regression
+10    Regularization
+11    Classification
+12    Decision Trees
+13    Naive Bayes
+14    SVM
+15    Neural Networks
+16    Backpropagation
+17    Deep Learning
+18    Clustering
+19    K-Means
+20    PCA
+21    Dimensionality Reduction
+22    Overfitting
+23    Underfitting
+24    Model Evaluation
+
+------------------------------------------------------------------------------------------
+17. Cloud Computing
+Book: Cloud Computing: Concepts, Technology & Architecture
+Author(s): Thomas Erl, Zaigham Mahmood, Ricardo Puttini
+------------------------------------------------------------------------------------------
+Index Concept
+01    Cloud Computing Fundamentals
+02    Virtualization
+03    Containers
+04    Data Centers
+05    IaaS
+06    PaaS
+07    SaaS
+08    Public Cloud
+09    Private Cloud
+10    Hybrid Cloud
+11    Multi-Cloud
+12    Virtual Machines
+13    Hypervisors
+14    Containerization
+15    Container Orchestration
+16    Load Balancing
+17    Auto Scaling
+18    High Availability
+19    Fault Tolerance
+20    Disaster Recovery
+21    Object Storage
+22    Block Storage
+23    File Storage
+
+------------------------------------------------------------------------------------------
+18. Linux / OS Internals
+Book: The Linux Programming Interface
+Author(s): Michael Kerrisk
+------------------------------------------------------------------------------------------
+Index Concept
+01    Linux Kernel
+02    Shell
+03    Processes
+04    Users
+05    Permissions
+06    File Descriptors
+07    Inodes
+08    File Systems
+09    fork()
+10    exec()
+11    wait()
+12    Signals
+13    Pipes
+14    FIFOs
+15    Shared Memory
+16    Message Queues
+17    Sockets
+18    Threads
+19    Synchronization
+20    Memory Mapping
+21    Linux System Calls
+
+------------------------------------------------------------------------------------------
+19. Data Science
+Book: Python for Data Analysis
+Author(s): Wes McKinney
+------------------------------------------------------------------------------------------
+Index Concept
+01    Python Fundamentals
+02    NumPy
+03    Pandas
+04    Data Structures
+05    Data Cleaning
+06    Missing Values
+07    Duplicate Data
+08    Data Transformation
+09    Filtering
+10    Grouping
+11    Aggregation
+12    Statistical Analysis
+13    Data Visualization
+14    Exploratory Data Analysis
+15    CSV
+16    JSON
+17    Excel
+18    SQL
+19    APIs
+
+------------------------------------------------------------------------------------------
+20. Numerical Analysis
+Book: Numerical Analysis
+Author(s): Richard L. Burden, J. Douglas Faires
+------------------------------------------------------------------------------------------
+Index Concept
+01    Error Analysis
+02    Absolute Error
+03    Relative Error
+04    Floating Point
+05    Bisection Method
+06    Newton-Raphson
+07    Secant Method
+08    Linear Systems
+09    Gaussian Elimination
+10    Matrix Methods
+11    Polynomial Interpolation
+12    Newton Interpolation
+13    Lagrange Interpolation
+14    Trapezoidal Rule
+15    Simpson's Rule
+16    Numerical Differentiation
+17    Euler Method
+18    Runge-Kutta
+
+
+>>> Computer Science & Engineering (CSE) — MASTER BOOK LIST
+#   Subject                     Book                                                   Author(s)
+01  DSA                         Introduction to Algorithms                             Cormen, Leiserson, Rivest, Stein
+02  DBMS                        Database System Concepts                               Silberschatz, Korth, Sudarshan
+03  OS                          Operating System Concepts                              Silberschatz, Galvin, Gagne
+04  Networks                    Computer Networking: A Top-Down Approach               Kurose, Ross
+05  Architecture                Computer Organization and Design                       Patterson, Hennessy
+06  OOP                         Head First Object-Oriented Analysis and Design         McLaughlin, Pollice, West
+07  Discrete Math               Discrete Mathematics and Its Applications              Kenneth Rosen
+08  Compiler                    Compilers: Principles, Techniques, and Tools           Aho, Lam, Sethi, Ullman
+09  TOC                         Introduction to the Theory of Computation              Michael Sipser
+10  Programming Languages       Concepts of Programming Languages                      Robert Sebesta
+11  Software Engineering        Software Engineering                                   Ian Sommerville
+12  Distributed Systems         Distributed Systems: Principles and Paradigms          Tanenbaum, van Steen
+13  System Design               Designing Data-Intensive Applications                  Martin Kleppmann
+14  Security                    Computer Security: Principles and Practice             Stallings, Brown
+15  AI                          Artificial Intelligence: A Modern Approach             Russell, Norvig
+16  ML                          Pattern Recognition and Machine Learning               Christopher Bishop
+17  Cloud                       Cloud Computing: Concepts, Technology & Architecture   Erl, Mahmood, Puttini
+18  Linux                       The Linux Programming Interface                        Michael Kerrisk
+19  Data Science                Python for Data Analysis                               Wes McKinney
+20  Numerical Analysis          Numerical Analysis                                     Burden, Faires
+
+
+##########################################################################################
+ELECTRICAL & ELECTRONIC ENGINEERING (EEE)
+##########################################################################################
+
+------------------------------------------------------------------------------------------
+01. Circuit Analysis
+Book: Engineering Circuit Analysis
+Author(s): William H. Hayt Jr., Jack E. Kemmerly, Steven M. Durbin
+------------------------------------------------------------------------------------------
+Index Concept
+01    Basic Electrical Quantities — voltage, current, power, energy
+02    Circuit Elements — resistor, capacitor, inductor
+03    Ohm's Law
+04    Kirchhoff's Current Law (KCL)
+05    Kirchhoff's Voltage Law (KVL)
+06    Series and Parallel Circuits
+07    Voltage Division
+08    Current Division
+09    Node Analysis
+10    Mesh Analysis
+11    Nodal Analysis
+12    Source Transformation
+13    Thevenin's Theorem
+14    Norton's Theorem
+15    Superposition Theorem
+16    Maximum Power Transfer
+17    Operational Amplifiers
+18    First-Order Circuits
+19    Second-Order Circuits
+20    Sinusoidal Steady State
+21    Phasors
+22    AC Power
+23    Power Factor
+24    Resonance
+25    Three-Phase Circuits
+26    Transient Analysis
+
+------------------------------------------------------------------------------------------
+02. Electrical Machines
+Book: Electrical Machinery Fundamentals
+Author(s): Stephen J. Chapman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Magnetic Circuits
+02    Magnetic Fields
+03    Faraday's Law
+04    Lenz's Law
+05    Electromagnetic Force
+06    Transformers
+07    Transformer Equivalent Circuit
+08    Transformer Efficiency
+09    Voltage Regulation
+10    DC Machines
+11    DC Generators
+12    DC Motors
+13    Motor Torque
+14    Speed Control
+15    Induction Motors
+16    Three-Phase Induction Motors
+17    Slip
+18    Rotor Frequency
+19    Synchronous Machines
+20    Synchronous Generators
+21    Synchronous Motors
+22    Starting Methods
+23    Motor Losses
+24    Efficiency
+
+------------------------------------------------------------------------------------------
+03. Power Systems
+Book: Power System Analysis and Design
+Author(s): J. Duncan Glover, Mulukutla S. Sarma, Thomas Overbye
+------------------------------------------------------------------------------------------
+Index Concept
+01    Power System Fundamentals
+02    Generation
+03    Transmission
+04    Distribution
+05    Per-Unit System
+06    Single-Line Diagram
+07    Transmission Lines
+08    Line Parameters
+09    Line Models
+10    Power Flow
+11    Bus Systems
+12    Gauss-Seidel Load Flow
+13    Newton-Raphson Load Flow
+14    Fault Analysis
+15    Symmetrical Faults
+16    Unsymmetrical Faults
+17    Symmetrical Components
+18    Short-Circuit Analysis
+19    Power System Stability
+20    Voltage Stability
+21    Frequency Stability
+22    Protection
+23    Circuit Breakers
+24    Relays
+25    Power Factor Correction
+26    Grounding
+
+------------------------------------------------------------------------------------------
+04. Electrical Power Generation
+Book: Electrical Power Systems
+Author(s): C. L. Wadhwa
+------------------------------------------------------------------------------------------
+Index Concept
+01    Power Generation
+02    Thermal Power Plants
+03    Hydroelectric Power
+04    Nuclear Power
+05    Gas Turbine Plants
+06    Renewable Energy
+07    Solar Power
+08    Wind Power
+09    Power Plant Economics
+10    Load Curve
+11    Load Duration Curve
+12    Load Factor
+13    Diversity Factor
+14    Demand Factor
+15    Plant Capacity Factor
+16    Economic Dispatch
+17    Unit Commitment
+18    Grid Integration
+
+------------------------------------------------------------------------------------------
+05. Signals & Systems
+Book: Signals and Systems
+Author(s): Alan V. Oppenheim, Alan S. Willsky, S. Hamid Nawab
+------------------------------------------------------------------------------------------
+Index Concept
+01    Continuous-Time Signals
+02    Discrete-Time Signals
+03    Unit Step
+04    Impulse Signal
+05    Energy and Power Signals
+06    Signal Operations
+07    LTI Systems
+08    System Properties
+09    Convolution
+10    Differential Equations
+11    Difference Equations
+12    Fourier Series
+13    Fourier Transform
+14    Laplace Transform
+15    Z-Transform
+16    Sampling
+17    Sampling Theorem
+18    Frequency Response
+19    Transfer Function
+20    System Stability
+
+------------------------------------------------------------------------------------------
+06. Control Systems
+Book: Modern Control Engineering
+Author(s): Katsuhiko Ogata
+------------------------------------------------------------------------------------------
+Index Concept
+01    Control System Fundamentals
+02    Open-Loop System
+03    Closed-Loop System
+04    Feedback
+05    Transfer Functions
+06    Block Diagrams
+07    Signal Flow Graphs
+08    Mason's Gain Formula
+09    Time Response
+10    First-Order Systems
+11    Second-Order Systems
+12    Steady-State Error
+13    Stability
+14    Routh-Hurwitz Criterion
+15    Root Locus
+16    Frequency Response
+17    Bode Plot
+18    Nyquist Plot
+19    PID Controller
+20    Proportional Control
+21    Integral Control
+22    Derivative Control
+23    State-Space Analysis
+24    Controllability
+25    Observability
+
+------------------------------------------------------------------------------------------
+07. Electronic Devices & Circuits
+Book: Microelectronic Circuits
+Author(s): Adel S. Sedra, Kenneth C. Smith
+------------------------------------------------------------------------------------------
+Index Concept
+01    Semiconductor Fundamentals
+02    PN Junction
+03    Diode
+04    Diode Characteristics
+05    Rectifiers
+06    Zener Diode
+07    BJT
+08    BJT Biasing
+09    BJT Amplifiers
+10    MOSFET
+11    MOSFET Characteristics
+12    MOSFET Biasing
+13    MOSFET Amplifiers
+14    Small-Signal Analysis
+15    Frequency Response
+16    Operational Amplifiers
+17    Differential Amplifier
+18    Current Mirrors
+19    Feedback
+20    Oscillators
+21    CMOS Circuits
+22    Integrated Circuits
+
+------------------------------------------------------------------------------------------
+08. Electronic Devices
+Book: Electronic Devices and Circuit Theory
+Author(s): Robert L. Boylestad, Louis Nashelsky
+------------------------------------------------------------------------------------------
+Index Concept
+01    Semiconductor Physics
+02    PN Junction
+03    Diodes
+04    Rectifier Circuits
+05    Clippers
+06    Clampers
+07    Zener Regulators
+08    BJT
+09    BJT Biasing
+10    Transistor Amplifiers
+11    FET
+12    MOSFET
+13    Amplifier Configurations
+14    Feedback
+15    Oscillators
+16    Power Amplifiers
+17    Thyristors
+18    SCR
+19    UJT
+20    Photodiodes
+21    LEDs
+22    Optocouplers
+
+------------------------------------------------------------------------------------------
+09. Digital Electronics
+Book: Digital Design
+Author(s): M. Morris Mano
+------------------------------------------------------------------------------------------
+Index Concept
+01    Number Systems
+02    Binary
+03    Octal
+04    Hexadecimal
+05    Boolean Algebra
+06    Logic Gates
+07    Truth Tables
+08    Karnaugh Maps
+09    Logic Simplification
+10    Combinational Circuits
+11    Adders
+12    Subtractors
+13    Multiplexers
+14    Demultiplexers
+15    Encoders
+16    Decoders
+17    Sequential Circuits
+18    Latches
+19    Flip-Flops
+20    Counters
+21    Registers
+22    Shift Registers
+23    Memory
+24    RAM
+25    ROM
+26    PLD
+27    FPGA Fundamentals
+
+------------------------------------------------------------------------------------------
+10. Microprocessors & Microcontrollers
+Book: The 8051 Microcontroller and Embedded Systems
+Author(s): Muhammad Ali Mazidi, Janice Gillispie Mazidi, Rolin D. McKinlay
+------------------------------------------------------------------------------------------
+Index Concept
+01    Microprocessor Fundamentals
+02    Microcontroller Fundamentals
+03    8051 Architecture
+04    CPU Registers
+05    Memory Organization
+06    Addressing Modes
+07    Instruction Set
+08    Assembly Programming
+09    I/O Ports
+10    Timers
+11    Counters
+12    Interrupts
+13    Serial Communication
+14    UART
+15    ADC
+16    DAC
+17    LCD Interfacing
+18    Keypad Interfacing
+19    Sensors
+20    Embedded Systems
+
+------------------------------------------------------------------------------------------
+11. Power Electronics
+Book: Power Electronics: Converters, Applications, and Design
+Author(s): Ned Mohan, Tore M. Undeland, William P. Robbins
+------------------------------------------------------------------------------------------
+Index Concept
+01    Power Semiconductor Devices
+02    Diodes
+03    SCR
+04    MOSFET
+05    IGBT
+06    Controlled Rectifiers
+07    Uncontrolled Rectifiers
+08    AC Voltage Controllers
+09    DC-DC Converters
+10    Buck Converter
+11    Boost Converter
+12    Buck-Boost Converter
+13    Inverters
+14    PWM
+15    Single-Phase Inverter
+16    Three-Phase Inverter
+17    Cycloconverters
+18    Switching Losses
+19    Power Factor Correction
+20    Motor Drives
+
+------------------------------------------------------------------------------------------
+12. Communication Systems
+Book: Communication Systems
+Author(s): Simon Haykin
+------------------------------------------------------------------------------------------
+Index Concept
+01    Communication Fundamentals
+02    Analog Communication
+03    AM
+04    FM
+05    PM
+06    Modulation
+07    Demodulation
+08    Noise
+09    SNR
+10    Sampling
+11    Pulse Modulation
+12    PAM
+13    PWM
+14    PCM
+15    Digital Communication
+16    ASK
+17    FSK
+18    PSK
+19    QAM
+20    Information Theory
+21    Channel Capacity
+22    Error Detection
+23    Error Correction
+24    Digital Filters
+
+------------------------------------------------------------------------------------------
+13. Electromagnetic Fields & Waves
+Book: Engineering Electromagnetics
+Author(s): William H. Hayt Jr., John A. Buck
+------------------------------------------------------------------------------------------
+Index Concept
+01    Vector Analysis
+02    Coordinate Systems
+03    Electric Fields
+04    Coulomb's Law
+05    Electric Flux
+06    Gauss's Law
+07    Electric Potential
+08    Capacitance
+09    Magnetic Fields
+10    Biot-Savart Law
+11    Ampere's Law
+12    Magnetic Flux
+13    Inductance
+14    Faraday's Law
+15    Maxwell's Equations
+16    Electromagnetic Waves
+17    Wave Propagation
+18    Polarization
+19    Reflection
+20    Refraction
+21    Transmission Lines
+22    Waveguides
+23    Antennas
+
+------------------------------------------------------------------------------------------
+14. Measurements & Instrumentation
+Book: Electronic Instrumentation and Measurements
+Author(s): David A. Bell
+------------------------------------------------------------------------------------------
+Index Concept
+01    Measurement Fundamentals
+02    Measurement Errors
+03    Accuracy
+04    Precision
+05    Resolution
+06    Analog Instruments
+07    Digital Instruments
+08    Multimeter
+09    Oscilloscope
+10    Signal Generator
+11    Bridges
+12    Wheatstone Bridge
+13    Transducers
+14    Sensors
+15    Temperature Measurement
+16    Pressure Measurement
+17    Displacement Measurement
+18    Strain Measurement
+19    Data Acquisition
+20    ADC
+21    DAC
+
+------------------------------------------------------------------------------------------
+15. Renewable Energy
+Book: Renewable Energy: Power for a Sustainable Future
+Author(s): Godfrey Boyle
+------------------------------------------------------------------------------------------
+Index Concept
+01    Renewable Energy Fundamentals
+02    Solar Energy
+03    Solar Radiation
+04    Photovoltaic Cells
+05    PV Modules
+06    Solar Inverters
+07    Maximum Power Point Tracking
+08    Wind Energy
+09    Wind Turbines
+10    Hydropower
+11    Biomass
+12    Geothermal Energy
+13    Fuel Cells
+14    Energy Storage
+15    Batteries
+16    Grid Integration
+17    Smart Grid
+
+------------------------------------------------------------------------------------------
+16. Energy Storage & Batteries
+Book: Linden's Handbook of Batteries
+Author(s): Thomas B. Reddy and David Linden
+------------------------------------------------------------------------------------------
+Index Concept
+01    Battery Fundamentals
+02    Primary Batteries
+03    Secondary Batteries
+04    Lead-Acid Batteries
+05    Lithium-Ion Batteries
+06    Battery Chemistry
+07    Cell Voltage
+08    Capacity
+09    Energy Density
+10    Power Density
+11    Charging
+12    Discharging
+13    Battery Management System
+14    State of Charge
+15    State of Health
+16    Thermal Management
+17    Battery Safety
+
+------------------------------------------------------------------------------------------
+17. Robotics
+Book: Introduction to Robotics: Mechanics and Control
+Author(s): John J. Craig
+------------------------------------------------------------------------------------------
+Index Concept
+01    Robotics Fundamentals
+02    Robot Architecture
+03    Coordinate Systems
+04    Rotation Matrices
+05    Homogeneous Transformation
+06    Forward Kinematics
+07    Inverse Kinematics
+08    Jacobian
+09    Robot Dynamics
+10    Trajectory Planning
+11    Sensors
+12    Actuators
+13    Servo Motors
+14    Robot Control
+15    Motion Planning
+16    Mobile Robots
+
+------------------------------------------------------------------------------------------
+18. Embedded Systems
+Book: Embedded Systems: Introduction to Arm Cortex-M Microcontrollers
+Author(s): Jonathan W. Valvano
+------------------------------------------------------------------------------------------
+Index Concept
+01    Embedded Systems Fundamentals
+02    Microcontroller Architecture
+03    ARM Cortex-M
+04    GPIO
+05    Timers
+06    Interrupts
+07    ADC
+08    DAC
+09    PWM
+10    UART
+11    SPI
+12    I²C
+13    CAN
+14    Memory
+15    Real-Time Systems
+16    RTOS
+17    Embedded C
+18    Device Drivers
+19    Debugging
+20    Low-Power Design
+
+------------------------------------------------------------------------------------------
+19. Numerical / Engineering Mathematics
+Book: Advanced Engineering Mathematics
+Author(s): Erwin Kreyszig
+------------------------------------------------------------------------------------------
+Index Concept
+01    Differential Equations
+02    Linear Algebra
+03    Matrices
+04    Eigenvalues
+05    Eigenvectors
+06    Fourier Series
+07    Fourier Transform
+08    Laplace Transform
+09    Partial Differential Equations
+10    Complex Variables
+11    Vector Calculus
+12    Probability
+13    Statistics
+14    Numerical Methods
+15    Optimization
+
+------------------------------------------------------------------------------------------
+20. Industrial Electronics & Drives
+Book: Power Electronics and Motor Drives
+Author(s): Bimal K. Bose
+------------------------------------------------------------------------------------------
+Index Concept
+01    Electrical Drives
+02    Motor Characteristics
+03    DC Motor Drives
+04    AC Motor Drives
+05    Induction Motor Drives
+06    Synchronous Motor Drives
+07    Variable Frequency Drives
+08    Speed Control
+09    Torque Control
+10    PWM Drives
+11    Regenerative Braking
+12    Electric Vehicle Drives
+13    Digital Control
+14    Sensorless Control
+
+
+>>> Electrical & Electronic Engineering (EEE) — MASTER BOOK LIST
+#   Subject                     Book                                                   Author(s)
+01  Circuit Analysis            Engineering Circuit Analysis                           Hayt, Kemmerly, Durbin
+02  Electrical Machines         Electrical Machinery Fundamentals                      Stephen Chapman
+03  Power Systems               Power System Analysis and Design                       Glover, Sarma, Overbye
+04  Power Generation            Electrical Power Systems                               C. L. Wadhwa
+05  Signals & Systems           Signals and Systems                                    Oppenheim, Willsky, Nawab
+06  Control Systems             Modern Control Engineering                             Katsuhiko Ogata
+07  Electronics                 Microelectronic Circuits                               Sedra, Smith
+08  Electronic Devices          Electronic Devices and Circuit Theory                  Boylestad, Nashelsky
+09  Digital Electronics         Digital Design                                         M. Morris Mano
+10  Microcontroller             The 8051 Microcontroller and Embedded Systems          Mazidi, Mazidi, McKinlay
+11  Power Electronics           Power Electronics: Converters, Applications, and DesignMohan, Undeland, Robbins
+12  Communication               Communication Systems                                  Simon Haykin
+13  Electromagnetics            Engineering Electromagnetics                           Hayt, Buck
+14  Instrumentation             Electronic Instrumentation and Measurements            David A. Bell
+15  Renewable Energy            Renewable Energy                                       Godfrey Boyle
+16  Batteries                   Linden's Handbook of Batteries                         Reddy, Linden
+17  Robotics                    Introduction to Robotics                               John J. Craig
+18  Embedded Systems            Embedded Systems: Introduction to Arm Cortex-M MicrocontrollersJonathan W. Valvano
+19  Engineering Mathematics     Advanced Engineering Mathematics                       Erwin Kreyszig
+20  Motor Drives                Power Electronics and Motor Drives                     Bimal K. Bose
+
+
+##########################################################################################
+CIVIL ENGINEERING (CE)
+##########################################################################################
+
+------------------------------------------------------------------------------------------
+01. Engineering Mechanics
+Book: Engineering Mechanics: Statics
+Author(s): J. L. Meriam, L. G. Kraige
+------------------------------------------------------------------------------------------
+Index Concept
+01    Units and Dimensions
+02    Scalars and Vectors
+03    Force Systems
+04    Free Body Diagram
+05    Equilibrium
+06    Moment of Force
+07    Couple
+08    Resultant Force
+09    Friction
+10    Centroid
+11    Center of Gravity
+12    Moment of Inertia
+13    Trusses
+14    Frames
+15    Machines
+16    Virtual Work
+
+------------------------------------------------------------------------------------------
+02. Strength of Materials
+Book: Mechanics of Materials
+Author(s): Ferdinand P. Beer, E. Russell Johnston Jr., John DeWolf, David Mazurek
+------------------------------------------------------------------------------------------
+Index Concept
+01    Stress
+02    Strain
+03    Normal Stress
+04    Shear Stress
+05    Hooke's Law
+06    Elasticity
+07    Poisson's Ratio
+08    Axial Loading
+09    Torsion
+10    Shear Force
+11    Bending Moment
+12    Beam Analysis
+13    Bending Stress
+14    Shear Stress in Beams
+15    Deflection
+16    Buckling
+17    Columns
+18    Principal Stress
+19    Mohr's Circle
+20    Failure Theories
+
+------------------------------------------------------------------------------------------
+03. Structural Analysis
+Book: Structural Analysis
+Author(s): R. C. Hibbeler
+------------------------------------------------------------------------------------------
+Index Concept
+01    Structural Systems
+02    Determinate Structures
+03    Indeterminate Structures
+04    Support Reactions
+05    Trusses
+06    Beams
+07    Frames
+08    Shear Force Diagram
+09    Bending Moment Diagram
+10    Deflection
+11    Virtual Work
+12    Energy Methods
+13    Influence Lines
+14    Moving Loads
+15    Slope-Deflection Method
+16    Moment Distribution
+17    Matrix Structural Analysis
+18    Approximate Analysis
+
+------------------------------------------------------------------------------------------
+04. Reinforced Concrete Design
+Book: Design of Reinforced Concrete
+Author(s): Jack C. McCormac, Russell H. Brown
+------------------------------------------------------------------------------------------
+Index Concept
+01    Concrete Properties
+02    Reinforcement
+03    Concrete Strength
+04    Steel Strength
+05    Working Stress Design
+06    Limit State Design
+07    Flexural Design
+08    Singly Reinforced Beam
+09    Doubly Reinforced Beam
+10    Shear Design
+11    Bond
+12    Development Length
+13    Slab Design
+14    One-Way Slab
+15    Two-Way Slab
+16    Column Design
+17    Short Columns
+18    Long Columns
+19    Footing Design
+20    Staircase Design
+21    Serviceability
+22    Crack Control
+
+------------------------------------------------------------------------------------------
+05. Structural Steel Design
+Book: Design of Steel Structures
+Author(s): Elias G. Salmon, John E. Johnson, Faris A. Malhas
+------------------------------------------------------------------------------------------
+Index Concept
+01    Properties of Structural Steel
+02    Steel Sections
+03    Tension Members
+04    Compression Members
+05    Columns
+06    Buckling
+07    Flexural Members
+08    Beams
+09    Shear
+10    Beam-Columns
+11    Connections
+12    Bolted Connections
+13    Welded Connections
+14    Riveted Connections
+15    Plate Girders
+16    Trusses
+17    Design Loads
+18    Limit State Design
+
+------------------------------------------------------------------------------------------
+06. Concrete Technology
+Book: Concrete Technology
+Author(s): M. S. Shetty
+------------------------------------------------------------------------------------------
+Index Concept
+01    Cement
+02    Types of Cement
+03    Aggregates
+04    Water
+05    Admixtures
+06    Water-Cement Ratio
+07    Workability
+08    Slump Test
+09    Compaction
+10    Curing
+11    Concrete Mix Design
+12    Compressive Strength
+13    Tensile Strength
+14    Durability
+15    Shrinkage
+16    Creep
+17    Segregation
+18    Bleeding
+19    Ready-Mix Concrete
+20    Special Concrete
+
+------------------------------------------------------------------------------------------
+07. Soil Mechanics
+Book: Soil Mechanics
+Author(s): T. William Lambe, Robert V. Whitman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Soil Formation
+02    Soil Types
+03    Phase Relationships
+04    Index Properties
+05    Grain Size Distribution
+06    Atterberg Limits
+07    Soil Classification
+08    Compaction
+09    Permeability
+10    Darcy's Law
+11    Seepage
+12    Effective Stress
+13    Consolidation
+14    Settlement
+15    Shear Strength
+16    Mohr-Coulomb Theory
+17    Direct Shear Test
+18    Triaxial Test
+19    Earth Pressure
+20    Slope Stability
+
+------------------------------------------------------------------------------------------
+08. Foundation Engineering
+Book: Principles of Foundation Engineering
+Author(s): Braja M. Das
+------------------------------------------------------------------------------------------
+Index Concept
+01    Foundation Fundamentals
+02    Site Investigation
+03    Bearing Capacity
+04    Ultimate Bearing Capacity
+05    Allowable Bearing Capacity
+06    Shallow Foundations
+07    Isolated Footing
+08    Combined Footing
+09    Strip Footing
+10    Mat Foundation
+11    Settlement
+12    Pile Foundations
+13    Pile Capacity
+14    Pile Group
+15    Negative Skin Friction
+16    Well Foundations
+17    Machine Foundations
+18    Foundation Failure
+
+------------------------------------------------------------------------------------------
+09. Highway / Transportation Engineering
+Book: Traffic and Highway Engineering
+Author(s): Nicholas J. Garber, Lester A. Hoel
+------------------------------------------------------------------------------------------
+Index Concept
+01    Transportation Systems
+02    Highway Planning
+03    Highway Alignment
+04    Geometric Design
+05    Sight Distance
+06    Horizontal Curves
+07    Vertical Curves
+08    Pavement
+09    Flexible Pavement
+10    Rigid Pavement
+11    Pavement Materials
+12    Traffic Flow
+13    Traffic Volume
+14    Speed Studies
+15    Parking
+16    Intersections
+17    Traffic Signals
+18    Road Safety
+19    Highway Capacity
+20    Intelligent Transportation Systems
+
+------------------------------------------------------------------------------------------
+10. Traffic Engineering
+Book: Traffic Engineering
+Author(s): Roger P. Roess, Elena S. Prassas, William R. McShane
+------------------------------------------------------------------------------------------
+Index Concept
+01    Traffic Characteristics
+02    Traffic Flow
+03    Speed
+04    Density
+05    Volume
+06    Fundamental Diagram
+07    Traffic Surveys
+08    Origin-Destination Studies
+09    Parking Studies
+10    Intersection Analysis
+11    Traffic Signals
+12    Signal Timing
+13    Roundabouts
+14    Highway Capacity
+15    Level of Service
+16    Traffic Management
+17    Accident Analysis
+
+------------------------------------------------------------------------------------------
+11. Fluid Mechanics
+Book: Fluid Mechanics
+Author(s): Frank M. White
+------------------------------------------------------------------------------------------
+Index Concept
+01    Fluid Properties
+02    Pressure
+03    Hydrostatics
+04    Buoyancy
+05    Fluid Kinematics
+06    Continuity Equation
+07    Bernoulli Equation
+08    Momentum Equation
+09    Flow Measurement
+10    Pipe Flow
+11    Laminar Flow
+12    Turbulent Flow
+13    Boundary Layer
+14    Drag
+15    Lift
+16    Dimensional Analysis
+17    Similarity
+18    Open Channel Flow
+
+------------------------------------------------------------------------------------------
+12. Hydraulics
+Book: Open-Channel Hydraulics
+Author(s): Ven Te Chow
+------------------------------------------------------------------------------------------
+Index Concept
+01    Open Channel Flow
+02    Uniform Flow
+03    Non-Uniform Flow
+04    Steady Flow
+05    Unsteady Flow
+06    Chezy Equation
+07    Manning Equation
+08    Specific Energy
+09    Critical Flow
+10    Hydraulic Jump
+11    Gradually Varied Flow
+12    Rapidly Varied Flow
+13    Flow Measurement
+14    Weirs
+15    Spillways
+16    Channels
+
+------------------------------------------------------------------------------------------
+13. Water Supply Engineering
+Book: Water Supply Engineering
+Author(s): S. K. Garg
+------------------------------------------------------------------------------------------
+Index Concept
+01    Water Sources
+02    Surface Water
+03    Groundwater
+04    Water Demand
+05    Population Forecasting
+06    Intake Structures
+07    Water Quality
+08    Water Treatment
+09    Screening
+10    Sedimentation
+11    Coagulation
+12    Filtration
+13    Disinfection
+14    Chlorination
+15    Water Distribution
+16    Distribution Networks
+17    Pumps
+18    Water Storage
+
+------------------------------------------------------------------------------------------
+14. Environmental Engineering
+Book: Environmental Engineering: Fundamentals, Sustainability, Design
+Author(s): James R. Mihelcic, Julie B. Zimmerman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Environmental Engineering
+02    Water Pollution
+03    Air Pollution
+04    Soil Pollution
+05    Waste Management
+06    Solid Waste
+07    Hazardous Waste
+08    Wastewater
+09    Wastewater Characteristics
+10    BOD
+11    COD
+12    Primary Treatment
+13    Secondary Treatment
+14    Activated Sludge
+15    Trickling Filter
+16    Sludge Treatment
+17    Air Quality
+18    Pollution Control
+19    Sustainable Engineering
+
+------------------------------------------------------------------------------------------
+15. Wastewater Engineering
+Book: Wastewater Engineering: Treatment and Resource Recovery
+Author(s): Metcalf & Eddy / AECOM
+------------------------------------------------------------------------------------------
+Index Concept
+01    Wastewater Characteristics
+02    Collection Systems
+03    Sewer Design
+04    Preliminary Treatment
+05    Screening
+06    Grit Removal
+07    Primary Sedimentation
+08    Biological Treatment
+09    Activated Sludge
+10    Trickling Filters
+11    Nutrient Removal
+12    Disinfection
+13    Sludge Processing
+14    Anaerobic Digestion
+15    Effluent Treatment
+16    Water Reuse
+
+------------------------------------------------------------------------------------------
+16. Surveying
+Book: Surveying: Principles and Applications
+Author(s): Barry F. Kavanagh, Glenn Bird
+------------------------------------------------------------------------------------------
+Index Concept
+01    Surveying Fundamentals
+02    Chain Surveying
+03    Compass Surveying
+04    Plane Table Surveying
+05    Leveling
+06    Contouring
+07    Theodolite
+08    Traverse Survey
+09    Total Station
+10    EDM
+11    GPS/GNSS
+12    Coordinate Systems
+13    Error Analysis
+14    Topographic Survey
+15    Route Survey
+16    Construction Surveying
+
+------------------------------------------------------------------------------------------
+17. Remote Sensing & GIS
+Book: Remote Sensing and Image Interpretation
+Author(s): Thomas M. Lillesand, Ralph W. Kiefer, Jonathan W. Chipman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Remote Sensing
+02    Electromagnetic Spectrum
+03    Sensors
+04    Satellites
+05    Aerial Photography
+06    Image Processing
+07    Digital Images
+08    Image Classification
+09    GIS Fundamentals
+10    Spatial Data
+11    Raster Data
+12    Vector Data
+13    Coordinate Systems
+14    Spatial Analysis
+15    Digital Elevation Model
+16    GPS
+17    Land Use Mapping
+
+------------------------------------------------------------------------------------------
+18. Construction Management
+Book: Construction Project Management
+Author(s): Jimmie W. Hinze
+------------------------------------------------------------------------------------------
+Index Concept
+01    Construction Management
+02    Project Planning
+03    Project Scheduling
+04    Work Breakdown Structure
+05    Bar Chart
+06    CPM
+07    PERT
+08    Resource Management
+09    Cost Estimation
+10    Cost Control
+11    Quality Control
+12    Risk Management
+13    Contracts
+14    Tendering
+15    Procurement
+16    Construction Safety
+17    BIM
+18    Project Monitoring
+
+------------------------------------------------------------------------------------------
+19. Building Services
+Book: Mechanical and Electrical Equipment for Buildings
+Author(s): Walter T. Grondzik, Alison G. Kwok, Benjamin Stein, John S. Reynolds
+------------------------------------------------------------------------------------------
+Index Concept
+01    Building Services
+02    HVAC
+03    Heating
+04    Ventilation
+05    Air Conditioning
+06    Lighting
+07    Electrical Systems
+08    Plumbing
+09    Fire Protection
+10    Elevators
+11    Energy Efficiency
+12    Building Automation
+13    Indoor Air Quality
+14    Sustainable Buildings
+
+------------------------------------------------------------------------------------------
+20. Architectural / Building Construction
+Book: Building Construction
+Author(s): S. K. Sharma
+------------------------------------------------------------------------------------------
+Index Concept
+01    Building Materials
+02    Site Selection
+03    Foundations
+04    Walls
+05    Floors
+06    Roofs
+07    Doors
+08    Windows
+09    Staircases
+10    Masonry
+11    Brickwork
+12    Concrete Construction
+13    Formwork
+14    Waterproofing
+15    Finishing
+16    Maintenance
+
+------------------------------------------------------------------------------------------
+21. Engineering Mathematics
+Book: Advanced Engineering Mathematics
+Author(s): Erwin Kreyszig
+------------------------------------------------------------------------------------------
+Index Concept
+01    Differential Equations
+02    Linear Algebra
+03    Matrices
+04    Eigenvalues
+05    Eigenvectors
+06    Fourier Series
+07    Fourier Transform
+08    Laplace Transform
+09    Partial Differential Equations
+10    Vector Calculus
+11    Complex Analysis
+12    Probability
+13    Statistics
+14    Numerical Methods
+15    Optimization
+
+
+>>> Civil Engineering (CE) — MASTER BOOK LIST
+#   Subject                     Book                                                   Author(s)
+01  Engineering Mechanics       Engineering Mechanics: Statics                         Meriam & Kraige
+02  Strength of Materials       Mechanics of Materials                                 Beer, Johnston et al.
+03  Structural Analysis         Structural Analysis                                    R. C. Hibbeler
+04  Reinforced Concrete         Design of Reinforced Concrete                          McCormac & Brown
+05  Steel Structures            Design of Steel Structures                             Salmon, Johnson & Malhas
+06  Concrete Technology         Concrete Technology                                    M. S. Shetty
+07  Soil Mechanics              Soil Mechanics                                         Lambe & Whitman
+08  Foundation Engineering      Principles of Foundation Engineering                   Braja M. Das
+09  Highway Engineering         Traffic and Highway Engineering                        Garber & Hoel
+10  Traffic Engineering         Traffic Engineering                                    Roess, Prassas & McShane
+11  Fluid Mechanics             Fluid Mechanics                                        Frank M. White
+12  Hydraulics                  Open-Channel Hydraulics                                Ven Te Chow
+13  Water Supply                Water Supply Engineering                               S. K. Garg
+14  Environmental Engineering   Environmental Engineering                              Mihelcic & Zimmerman
+15  Wastewater                  Wastewater Engineering                                 Metcalf & Eddy
+16  Surveying                   Surveying: Principles and Applications                 Kavanagh & Bird
+17  Remote Sensing/GIS          Remote Sensing and Image Interpretation                Lillesand, Kiefer & Chipman
+18  Construction Management     Construction Project Management                        Jimmie W. Hinze
+19  Building Services           Mechanical and Electrical Equipment for Buildings      Grondzik et al.
+20  Building Construction       Building Construction                                  S. K. Sharma
+21  Engineering Mathematics     Advanced Engineering Mathematics                       Erwin Kreyszig
+
+
+##########################################################################################
+GENERAL SCIENCE & HUMANITIES
+##########################################################################################
+
+
+============================================================
+PHYSICS
+============================================================
+------------------------------------------------------------------------------------------
+01. Classical & Modern Physics
+Book: Fundamentals of Physics
+Author(s): David Halliday, Robert Resnick, Jearl Walker
+------------------------------------------------------------------------------------------
+Index Concept
+01    Units & Measurements
+02    Vectors
+03    Kinematics
+04    Newton's Laws
+05    Friction
+06    Work & Energy
+07    Momentum
+08    Rotational Motion
+09    Gravitation
+10    Fluid Mechanics
+11    Oscillations
+12    Waves
+13    Sound
+14    Temperature
+15    Heat
+16    Thermodynamics
+17    Electric Charge
+18    Electric Field
+19    Electric Potential
+20    Capacitance
+21    Current & Resistance
+22    DC Circuits
+23    Magnetic Field
+24    Electromagnetic Induction
+25    AC Circuits
+26    Electromagnetic Waves
+27    Optics
+28    Interference
+29    Diffraction
+30    Relativity
+31    Quantum Physics
+32    Atomic Physics
+33    Nuclear Physics
+34    Particle Physics
+
+------------------------------------------------------------------------------------------
+02. University Physics
+Book: University Physics with Modern Physics
+Author(s): Hugh D. Young, Roger A. Freedman
+------------------------------------------------------------------------------------------
+Index Concept
+01    Measurement
+02    Motion
+03    Newton's Laws
+04    Energy
+05    Momentum
+06    Rotation
+07    Gravitation
+08    Elasticity
+09    Fluid Mechanics
+10    Oscillations
+11    Waves
+12    Thermodynamics
+13    Electric Fields
+14    Gauss's Law
+15    Electric Potential
+16    Circuits
+17    Magnetic Fields
+18    Faraday's Law
+19    Maxwell's Equations
+20    Optics
+21    Relativity
+22    Quantum Mechanics
+23    Atomic Physics
+24    Nuclear Physics
+
+------------------------------------------------------------------------------------------
+03. Electrodynamics
+Book: Introduction to Electrodynamics
+Author(s): David J. Griffiths
+------------------------------------------------------------------------------------------
+Index Concept
+01    Vector Analysis
+02    Electrostatics
+03    Electric Fields
+04    Gauss's Law
+05    Electric Potential
+06    Conductors
+07    Dielectrics
+08    Magnetostatics
+09    Biot-Savart Law
+10    Ampère's Law
+11    Magnetic Fields
+12    Electromagnetic Induction
+13    Maxwell's Equations
+14    Electromagnetic Waves
+15    Radiation
+16    Relativity
+
+
+============================================================
+CHEMISTRY
+============================================================
+------------------------------------------------------------------------------------------
+01. General Chemistry
+Book: Chemistry: The Molecular Science
+Author(s): John W. Moore, Conrad L. Stanitski, Peter C. Jurs
+------------------------------------------------------------------------------------------
+Index Concept
+01    Matter
+02    Measurements
+03    Atomic Structure
+04    Periodic Table
+05    Chemical Bonding
+06    Lewis Structures
+07    Molecular Geometry
+08    Stoichiometry
+09    Chemical Reactions
+10    Gases
+11    Liquids
+12    Solids
+13    Thermochemistry
+14    Chemical Equilibrium
+15    Acids & Bases
+16    Solubility
+17    Electrochemistry
+18    Chemical Kinetics
+19    Organic Chemistry
+20    Nuclear Chemistry
+
+------------------------------------------------------------------------------------------
+02. Physical Chemistry
+Book: Atkins' Physical Chemistry
+Author(s): Peter Atkins, Julio de Paula, James Keeler
+------------------------------------------------------------------------------------------
+Index Concept
+01    Properties of Gases
+02    Thermodynamics
+03    Entropy
+04    Gibbs Energy
+05    Chemical Equilibrium
+06    Phase Equilibrium
+07    Electrochemistry
+08    Chemical Kinetics
+09    Quantum Theory
+10    Atomic Structure
+11    Molecular Structure
+12    Spectroscopy
+13    Statistical Thermodynamics
+14    Surface Chemistry
+
+------------------------------------------------------------------------------------------
+03. Organic Chemistry
+Book: Organic Chemistry
+Author(s): Jonathan Clayden, Nick Greeves, Stuart Warren
+------------------------------------------------------------------------------------------
+Index Concept
+01    Structure & Bonding
+02    Functional Groups
+03    Stereochemistry
+04    Acids & Bases
+05    Reaction Mechanisms
+06    Alkanes
+07    Alkenes
+08    Alkynes
+09    Aromatic Chemistry
+10    Haloalkanes
+11    Alcohols
+12    Ethers
+13    Aldehydes
+14    Ketones
+15    Carboxylic Acids
+16    Amines
+17    Carbonyl Chemistry
+18    Enolate Chemistry
+19    Organometallic Chemistry
+20    Spectroscopy
+21    Organic Synthesis
+
+------------------------------------------------------------------------------------------
+04. Inorganic Chemistry
+Book: Inorganic Chemistry
+Author(s): Catherine E. Housecroft, Alan G. Sharpe
+------------------------------------------------------------------------------------------
+Index Concept
+01    Atomic Structure
+02    Periodicity
+03    Chemical Bonding
+04    Coordination Chemistry
+05    Transition Metals
+06    Main Group Chemistry
+07    Acids & Bases
+08    Redox Chemistry
+09    Solid-State Chemistry
+10    Organometallic Chemistry
+11    Bioinorganic Chemistry
+12    Nanochemistry
+
+
+============================================================
+MATHEMATICS
+============================================================
+------------------------------------------------------------------------------------------
+01. Calculus
+Book: Calculus
+Author(s): James Stewart
+------------------------------------------------------------------------------------------
+Index Concept
+01    Functions
+02    Limits
+03    Continuity
+04    Derivatives
+05    Applications of Derivatives
+06    Integrals
+07    Applications of Integrals
+08    Techniques of Integration
+09    Differential Equations
+10    Parametric Equations
+11    Polar Coordinates
+12    Infinite Sequences
+13    Infinite Series
+14    Vectors
+15    Partial Derivatives
+16    Multiple Integrals
+17    Vector Calculus
+
+------------------------------------------------------------------------------------------
+02. Linear Algebra
+Book: Linear Algebra and Its Applications
+Author(s): David C. Lay
+------------------------------------------------------------------------------------------
+Index Concept
+01    Linear Equations
+02    Matrices
+03    Matrix Algebra
+04    Determinants
+05    Vector Spaces
+06    Subspaces
+07    Linear Independence
+08    Basis
+09    Dimension
+10    Eigenvalues
+11    Eigenvectors
+12    Diagonalization
+13    Orthogonality
+14    Least Squares
+15    Linear Transformations
+
+------------------------------------------------------------------------------------------
+03. Probability
+Book: Introduction to Probability
+Author(s): Dimitri P. Bertsekas, John N. Tsitsiklis
+------------------------------------------------------------------------------------------
+Index Concept
+01    Probability Spaces
+02    Conditional Probability
+03    Independence
+04    Random Variables
+05    Discrete Distributions
+06    Continuous Distributions
+07    Expectation
+08    Variance
+09    Covariance
+10    Joint Distributions
+11    Conditional Expectation
+12    Law of Large Numbers
+13    Central Limit Theorem
+14    Markov Chains
+15    Random Processes
+
+------------------------------------------------------------------------------------------
+04. Discrete Mathematics (Applied)
+Book: Concrete Mathematics
+Author(s): Ronald L. Graham, Donald E. Knuth, Oren Patashnik
+------------------------------------------------------------------------------------------
+Index Concept
+01    Mathematical Preliminaries
+02    Sums
+03    Recurrences
+04    Integer Functions
+05    Number Theory
+06    Binomial Coefficients
+07    Generating Functions
+08    Discrete Probability
+09    Asymptotics
+10    Number-Theoretic Algorithms
+
+------------------------------------------------------------------------------------------
+05. Real Analysis
+Book: Introduction to Real Analysis
+Author(s): Robert G. Bartle
+------------------------------------------------------------------------------------------
+Index Concept
+01    Real Numbers
+02    Sequences
+03    Limits
+04    Continuity
+05    Differentiation
+06    Riemann Integration
+07    Infinite Series
+08    Metric Spaces
+09    Uniform Convergence
+
+
+============================================================
+ENGLISH
+============================================================
+------------------------------------------------------------------------------------------
+01. Writing Style & Grammar
+Book: The Elements of Style
+Author(s): William Strunk Jr., E. B. White
+------------------------------------------------------------------------------------------
+Index Concept
+01    Grammar
+02    Sentence Structure
+03    Active Voice
+04    Conciseness
+05    Punctuation
+06    Word Usage
+07    Paragraph Construction
+08    Clarity
+09    Common Writing Errors
+10    Style
+
+------------------------------------------------------------------------------------------
+02. Practical Usage
+Book: Practical English Usage
+Author(s): Michael Swan
+------------------------------------------------------------------------------------------
+Index Concept
+01    Nouns
+02    Pronouns
+03    Articles
+04    Determiners
+05    Adjectives
+06    Adverbs
+07    Prepositions
+08    Verbs
+09    Tenses
+10    Modal Verbs
+11    Passive Voice
+12    Reported Speech
+13    Conditionals
+14    Relative Clauses
+15    Questions
+16    Punctuation
+17    Word Formation
+18    Common Errors
+
+------------------------------------------------------------------------------------------
+03. Grammar in Use
+Book: English Grammar in Use
+Author(s): Raymond Murphy
+------------------------------------------------------------------------------------------
+Index Concept
+01    Present Tenses
+02    Past Tenses
+03    Future
+04    Modals
+05    Passive
+06    Questions
+07    Reported Speech
+08    -ing Forms
+09    Infinitives
+10    Articles
+11    Pronouns
+12    Adjectives
+13    Adverbs
+14    Prepositions
+15    Phrasal Verbs
+16    Conjunctions
+17    Conditionals
+
+------------------------------------------------------------------------------------------
+04. Descriptive Grammar
+Book: The Cambridge Grammar of the English Language
+Author(s): Rodney Huddleston, Geoffrey K. Pullum et al.
+------------------------------------------------------------------------------------------
+Index Concept
+01    Grammar
+02    Words & Phrases
+03    Nouns
+04    Verbs
+05    Adjectives
+06    Adverbs
+07    Prepositions
+08    Clauses
+09    Sentence Structure
+10    Coordination
+11    Subordination
+12    Information Structure
+13    Meaning
+14    Syntax
+
+------------------------------------------------------------------------------------------
+05. Nonfiction Writing
+Book: On Writing Well
+Author(s): William Zinsser
+------------------------------------------------------------------------------------------
+Index Concept
+01    Clarity
+02    Simplicity
+03    Conciseness
+04    Paragraphs
+05    Style
+06    Business Writing
+07    Technical Writing
+08    Interviews
+09    Memoirs
+10    Revision
+
+
+============================================================
+ECONOMICS
+============================================================
+------------------------------------------------------------------------------------------
+01. Principles of Economics
+Book: Principles of Economics
+Author(s): N. Gregory Mankiw
+------------------------------------------------------------------------------------------
+Index Concept
+01    Economics Fundamentals
+02    Scarcity
+03    Opportunity Cost
+04    Supply
+05    Demand
+06    Market Equilibrium
+07    Elasticity
+08    Consumer Behavior
+09    Production
+10    Costs
+11    Perfect Competition
+12    Monopoly
+13    Oligopoly
+14    Externalities
+15    Public Goods
+16    Labor Markets
+17    Income Inequality
+18    GDP
+19    Inflation
+20    Unemployment
+21    Economic Growth
+22    Monetary Policy
+23    Fiscal Policy
+24    International Trade
+25    Exchange Rates
+
+------------------------------------------------------------------------------------------
+02. Microeconomics
+Book: Microeconomics
+Author(s): Robert S. Pindyck, Daniel L. Rubinfeld
+------------------------------------------------------------------------------------------
+Index Concept
+01    Supply & Demand
+02    Elasticity
+03    Consumer Choice
+04    Utility
+05    Production
+06    Cost
+07    Competitive Markets
+08    Monopoly
+09    Pricing
+10    Monopolistic Competition
+11    Oligopoly
+12    Game Theory
+13    Labor Markets
+14    Capital Markets
+15    Market Failure
+16    Externalities
+17    Public Goods
+18    Information Economics
+
+------------------------------------------------------------------------------------------
+03. Macroeconomics
+Book: Macroeconomics
+Author(s): Olivier Blanchard
+------------------------------------------------------------------------------------------
+Index Concept
+01    National Income
+02    GDP
+03    Inflation
+04    Unemployment
+05    Economic Growth
+06    Aggregate Demand
+07    Aggregate Supply
+08    Consumption
+09    Investment
+10    Fiscal Policy
+11    Monetary Policy
+12    Central Banking
+13    Interest Rates
+14    Exchange Rates
+15    International Trade
+16    Financial Markets
+17    Business Cycles
+18    Recessions
+19    Debt
+20    Global Economy
+
+------------------------------------------------------------------------------------------
+04. Econometrics
+Book: Econometric Analysis
+Author(s): William H. Greene
+------------------------------------------------------------------------------------------
+Index Concept
+01    Probability
+02    Statistics
+03    Regression
+04    Linear Regression
+05    Multiple Regression
+06    Hypothesis Testing
+07    Maximum Likelihood
+08    Time Series
+09    Panel Data
+10    Simultaneous Equations
+11    Instrumental Variables
+12    Heteroskedasticity
+13    Autocorrelation
+14    Model Selection
+
+------------------------------------------------------------------------------------------
+05. Political Economy
+Book: Capital in the Twenty-First Century
+Author(s): Thomas Piketty
+------------------------------------------------------------------------------------------
+Index Concept
+01    Capital
+02    Income
+03    Wealth Distribution
+04    Inequality
+05    Economic Growth
+06    Historical Wealth
+07    Capital Accumulation
+08    Taxation
+09    Wealth Concentration
+10    Economic Policy
+
+
+>>> General Science & Humanities — MASTER BOOK LIST
+#   Subject        Book                                                   Author(s)
+01  Physics        Fundamentals of Physics                                Halliday, Resnick, Walker
+02  Physics        University Physics                                     Young & Freedman
+03  Physics        Introduction to Electrodynamics                        David J. Griffiths
+04  Chemistry      Chemistry: The Molecular Science                       Moore, Stanitski, Jurs
+05  Chemistry      Atkins' Physical Chemistry                             Atkins, de Paula, Keeler
+06  Chemistry      Organic Chemistry                                      Clayden, Greeves, Warren
+07  Chemistry      Inorganic Chemistry                                    Housecroft & Sharpe
+08  Mathematics    Calculus                                               James Stewart
+09  Mathematics    Linear Algebra and Its Applications                    David C. Lay
+10  Mathematics    Introduction to Probability                            Bertsekas & Tsitsiklis
+11  Mathematics    Concrete Mathematics                                   Graham, Knuth, Patashnik
+12  Mathematics    Introduction to Real Analysis                          Robert G. Bartle
+13  English        The Elements of Style                                  Strunk & White
+14  English        Practical English Usage                                Michael Swan
+15  English        English Grammar in Use                                 Raymond Murphy
+16  English        The Cambridge Grammar of the English Language          Huddleston & Pullum et al.
+17  English        On Writing Well                                        William Zinsser
+18  Economics      Principles of Economics                                N. Gregory Mankiw
+19  Economics      Microeconomics                                         Pindyck & Rubinfeld
+20  Economics      Macroeconomics                                         Olivier Blanchard
+21  Economics      Econometric Analysis                                   William H. Greene
+22  Economics      Capital in the Twenty-First Century                    Thomas Piketty

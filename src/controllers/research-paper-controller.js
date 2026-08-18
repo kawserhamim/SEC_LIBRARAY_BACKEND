@@ -1,6 +1,7 @@
 import ResearchPaper from "../models/research-paper-model.js";
 
-export const createResearchPaper = async (req, res) => {
+// User (Student) submits a research paper (saved as pending)
+export const submitResearchPaperByUser = async (req, res) => {
   try {
     const {
       title,
@@ -38,6 +39,8 @@ export const createResearchPaper = async (req, res) => {
       }
     }
 
+    const userId = req.user?.id || req.user?._id;
+
     const paper = await ResearchPaper.create({
       title,
       authors,
@@ -49,6 +52,94 @@ export const createResearchPaper = async (req, res) => {
       journalName,
       conferenceName,
       doi,
+      status: "pending",
+      submittedBy: {
+        userId,
+        name: req.user?.name,
+        email: req.user?.email,
+        regNo: req.user?.regNo,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Research paper submitted successfully and is pending admin approval",
+      paper,
+    });
+  } catch (error) {
+    console.error("Submit research paper error:", error);
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "A research paper with this DOI already exists",
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Failed to submit research paper",
+    });
+  }
+};
+
+// Admin directly creates a research paper (saved as approved)
+export const createResearchPaper = async (req, res) => {
+  try {
+    const {
+      title,
+      authors,
+      abstract,
+      category,
+      keywords,
+      paperLink,
+      publicationDate,
+      journalName,
+      conferenceName,
+      doi,
+      isPublished,
+    } = req.body;
+
+    if (!title || !authors || !category || !paperLink) {
+      return res.status(400).json({
+        success: false,
+        message: "Title, authors, category and paper link are required",
+      });
+    }
+
+    if (!Array.isArray(authors) || authors.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one author is required",
+      });
+    }
+
+    for (const author of authors) {
+      if (!author.name || !author.name.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "Every author must have a name",
+        });
+      }
+    }
+
+    const adminId = req.user?.id || req.user?._id;
+
+    const paper = await ResearchPaper.create({
+      title,
+      authors,
+      abstract,
+      category,
+      keywords,
+      paperLink,
+      publicationDate,
+      journalName,
+      conferenceName,
+      doi,
+      isPublished: isPublished !== undefined ? isPublished : true,
+      status: "approved",
+      approvedBy: {
+        adminId,
+        approvedAt: new Date(),
+      },
     });
 
     return res.status(201).json({
@@ -71,12 +162,64 @@ export const createResearchPaper = async (req, res) => {
   }
 };
 
+// User (Student) views all papers created by themselves (pending, approved, rejected)
+export const getMyResearchPapers = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    const { status } = req.query;
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
+    const skip = (page - 1) * limit;
+
+    const filter = { "submittedBy.userId": userId };
+    if (status && ["pending", "approved", "rejected"].includes(status)) {
+      filter.status = status;
+    }
+
+    const [papers, totalPapers] = await Promise.all([
+      ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ResearchPaper.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalPapers / limit);
+
+    return res.status(200).json({
+      success: true,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalPapers,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+      papers,
+    });
+  } catch (error) {
+    console.error("Get my research papers error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch your research papers",
+    });
+  }
+};
+
+// Public / Student: Get all approved papers (+ user's own papers if logged in)
 export const getAllResearchPapers = async (req, res) => {
   try {
     const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const limit = Math.min(Math.max(parseInt(req.query.limit) || 3, 1), 100);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const skip = (page - 1) * limit;
-    const filter = { isPublished: true };
+
+    const userId = req.user?.id || req.user?._id;
+    let filter = { isPublished: true, status: "approved" };
+
+    if (userId) {
+      filter = {
+        isPublished: true,
+        $or: [{ status: "approved" }, { "submittedBy.userId": userId }],
+      };
+    }
 
     const [papers, totalPapers] = await Promise.all([
       ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
@@ -106,10 +249,199 @@ export const getAllResearchPapers = async (req, res) => {
   }
 };
 
+// Admin: Get all research papers (all, pending, approved, or rejected)
+export const getAllResearchPapersForAdmin = async (req, res) => {
+  try {
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
+    const skip = (page - 1) * limit;
+
+    const { status } = req.query;
+    const filter = {};
+
+    if (status && ["pending", "approved", "rejected"].includes(status)) {
+      filter.status = status;
+    }
+
+    const [papers, totalPapers] = await Promise.all([
+      ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ResearchPaper.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalPapers / limit);
+
+    return res.status(200).json({
+      success: true,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalPapers,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+      papers,
+    });
+  } catch (error) {
+    console.error("Get all research papers for admin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch research papers",
+    });
+  }
+};
+
+// Admin: Get only pending research papers
+export const getPendingResearchPapers = async (req, res) => {
+  try {
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
+    const skip = (page - 1) * limit;
+
+    const filter = { status: "pending" };
+
+    const [papers, totalPapers] = await Promise.all([
+      ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ResearchPaper.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalPapers / limit);
+
+    return res.status(200).json({
+      success: true,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalPapers,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+      papers,
+    });
+  } catch (error) {
+    console.error("Get pending research papers error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch pending research papers",
+    });
+  }
+};
+
+// Admin: Approve a research paper
+export const approveResearchPaper = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const adminId = req.user?.id || req.user?._id;
+
+    const paper = await ResearchPaper.findById(id);
+
+    if (!paper) {
+      return res.status(404).json({
+        success: false,
+        message: "Research paper not found",
+      });
+    }
+
+    if (paper.status === "approved") {
+      return res.status(400).json({
+        success: false,
+        message: "Research paper is already approved",
+      });
+    }
+
+    paper.status = "approved";
+    paper.approvedBy = {
+      adminId,
+      approvedAt: new Date(),
+    };
+    paper.rejectedBy = undefined;
+
+    await paper.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Research paper approved successfully",
+      paper,
+    });
+  } catch (error) {
+    console.error("Approve research paper error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to approve research paper",
+    });
+  }
+};
+
+// Admin: Reject a research paper
+export const rejectResearchPaper = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const adminId = req.user?.id || req.user?._id;
+    const { reason } = req.body || {};
+
+    const paper = await ResearchPaper.findById(id);
+
+    if (!paper) {
+      return res.status(404).json({
+        success: false,
+        message: "Research paper not found",
+      });
+    }
+
+    if (paper.status === "rejected") {
+      return res.status(400).json({
+        success: false,
+        message: "Research paper is already rejected",
+      });
+    }
+
+    paper.status = "rejected";
+    paper.rejectedBy = {
+      adminId,
+      rejectedAt: new Date(),
+      reason: reason || "",
+    };
+    paper.approvedBy = undefined;
+
+    await paper.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Research paper rejected successfully",
+      paper,
+    });
+  } catch (error) {
+    console.error("Reject research paper error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject research paper",
+    });
+  }
+};
+
+// Get single research paper by ID (Admins can view any; users can view approved or their own pending)
 export const getResearchPaperById = async (req, res) => {
   try {
     const { id } = req.params;
-    const paper = await ResearchPaper.findOne({ _id: id, isPublished: true }).lean();
+    const userId = req.user?.id || req.user?._id;
+    const isAdmin = req.user?.role === "admin";
+
+    let filter = { _id: id };
+
+    if (!isAdmin) {
+      if (userId) {
+        filter = {
+          _id: id,
+          isPublished: true,
+          $or: [{ status: "approved" }, { "submittedBy.userId": userId }],
+        };
+      } else {
+        filter = { _id: id, isPublished: true, status: "approved" };
+      }
+    }
+
+    const paper = await ResearchPaper.findOne(filter).lean();
 
     if (!paper) {
       return res.status(404).json({
@@ -128,6 +460,7 @@ export const getResearchPaperById = async (req, res) => {
   }
 };
 
+// Search research papers
 export const searchResearchPapers = async (req, res) => {
   try {
     const {
@@ -139,6 +472,7 @@ export const searchResearchPapers = async (req, res) => {
       journal,
       conference,
       doi,
+      status,
       page = 1,
       limit = 20,
     } = req.query;
@@ -147,29 +481,56 @@ export const searchResearchPapers = async (req, res) => {
     const perPage = Math.min(Math.max(parseInt(limit) || 20, 1), 100);
     const skip = (currentPage - 1) * perPage;
 
-    const filter = { isPublished: true };
+    const userId = req.user?.id || req.user?._id;
+    const isAdmin = req.user?.role === "admin";
+
+    const filter = {};
+
+    if (!isAdmin) {
+      filter.isPublished = true;
+      if (userId) {
+        filter.$or = [{ status: "approved" }, { "submittedBy.userId": userId }];
+      } else {
+        filter.status = "approved";
+      }
+    } else if (status && ["pending", "approved", "rejected"].includes(status)) {
+      filter.status = status;
+    }
+
+    const searchConditions = [];
 
     if (query && query.trim()) {
       const search = query.trim();
-      filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { "authors.name": { $regex: search, $options: "i" } },
-        { abstract: { $regex: search, $options: "i" } },
-        { keywords: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
-        { journalName: { $regex: search, $options: "i" } },
-        { conferenceName: { $regex: search, $options: "i" } },
-        { doi: { $regex: search, $options: "i" } },
-      ];
+      searchConditions.push({
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { "authors.name": { $regex: search, $options: "i" } },
+          { abstract: { $regex: search, $options: "i" } },
+          { keywords: { $regex: search, $options: "i" } },
+          { category: { $regex: search, $options: "i" } },
+          { journalName: { $regex: search, $options: "i" } },
+          { conferenceName: { $regex: search, $options: "i" } },
+          { doi: { $regex: search, $options: "i" } },
+        ],
+      });
     }
 
-    if (title && title.trim()) filter.title = { $regex: title.trim(), $options: "i" };
-    if (author && author.trim()) filter["authors.name"] = { $regex: author.trim(), $options: "i" };
-    if (category && category.trim()) filter.category = { $regex: category.trim(), $options: "i" };
-    if (keyword && keyword.trim()) filter.keywords = { $regex: keyword.trim(), $options: "i" };
-    if (journal && journal.trim()) filter.journalName = { $regex: journal.trim(), $options: "i" };
-    if (conference && conference.trim()) filter.conferenceName = { $regex: conference.trim(), $options: "i" };
-    if (doi && doi.trim()) filter.doi = { $regex: doi.trim(), $options: "i" };
+    if (title && title.trim()) searchConditions.push({ title: { $regex: title.trim(), $options: "i" } });
+    if (author && author.trim()) searchConditions.push({ "authors.name": { $regex: author.trim(), $options: "i" } });
+    if (category && category.trim()) searchConditions.push({ category: { $regex: category.trim(), $options: "i" } });
+    if (keyword && keyword.trim()) searchConditions.push({ keywords: { $regex: keyword.trim(), $options: "i" } });
+    if (journal && journal.trim()) searchConditions.push({ journalName: { $regex: journal.trim(), $options: "i" } });
+    if (conference && conference.trim()) searchConditions.push({ conferenceName: { $regex: conference.trim(), $options: "i" } });
+    if (doi && doi.trim()) searchConditions.push({ doi: { $regex: doi.trim(), $options: "i" } });
+
+    if (searchConditions.length > 0) {
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, ...searchConditions];
+        delete filter.$or;
+      } else {
+        filter.$and = searchConditions;
+      }
+    }
 
     const [papers, totalPapers] = await Promise.all([
       ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(perPage).lean(),
@@ -209,6 +570,7 @@ export const searchResearchPapers = async (req, res) => {
   }
 };
 
+// Admin: Update research paper
 export const updateResearchPaper = async (req, res) => {
   try {
     const { id } = req.params;
@@ -224,6 +586,7 @@ export const updateResearchPaper = async (req, res) => {
       conferenceName,
       doi,
       isPublished,
+      status,
     } = req.body;
 
     const paper = await ResearchPaper.findByIdAndUpdate(
@@ -240,6 +603,7 @@ export const updateResearchPaper = async (req, res) => {
         conferenceName,
         doi,
         isPublished,
+        ...(status && ["pending", "approved", "rejected"].includes(status) ? { status } : {}),
       },
       { new: true, runValidators: true }
     );
@@ -271,6 +635,7 @@ export const updateResearchPaper = async (req, res) => {
   }
 };
 
+// Admin: Delete research paper
 export const deleteResearchPaper = async (req, res) => {
   try {
     const { id } = req.params;
