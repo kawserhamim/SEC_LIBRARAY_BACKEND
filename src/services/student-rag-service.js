@@ -6,7 +6,7 @@ import Groq from "groq-sdk";
 import fs from "fs";
 import path from "path";
 import NodeCache from "node-cache";
-
+import { z } from "zod";
 
 
 // ===============================
@@ -231,7 +231,27 @@ export async function searchSimilarDocuments(query, limit = 4) {
 // ===============================
 // RAG Query Handler
 // ===============================
+const BookSchema = z.object({
+  title: z.string(),
+  authors: z.string(),
+  category: z.string(),
+  isbn: z.string().nullable(),
+  topics: z.array(z.string()),
+  description: z.string(),
+});
 
+const BookResponseSchema = z.object({
+  type: z.enum(["book_list", "single_book"]),
+  message: z.string(),
+  books: z.array(BookSchema),
+}).strict();
+
+const TextOnlyResponseSchema = z.object({
+  type: z.enum(["no_match", "unavailable", "conversation", "out_of_scope", "attribution"]),
+  message: z.string(),
+}).strict();
+
+const AssistantResponseSchema = z.union([BookResponseSchema, TextOnlyResponseSchema]);
 const chatCache = new NodeCache({ stdTTL: 60 * 60 * 1 }); //1hrs
 export async function askLibraryAssistant(userInput, threadId,) {
   const cacheKey = threadId;
@@ -243,9 +263,12 @@ export async function askLibraryAssistant(userInput, threadId,) {
   // Retrieve relevant book context
   const contextChunks = await searchSimilarDocuments(query, 4);
 
+  // if (!contextChunks.length) {
+  //   return "No book in the database currently covers this topic.";
+  // }
   if (!contextChunks.length) {
-    return "No book in the database currently covers this topic.";
-  }
+  return { type: "no_match", message: "No book in the database currently covers this topic." };
+}
 
   const contextText = contextChunks.join("\n\n---\n\n");
   const oldMessages = chatCache.get(cacheKey) ?? [];
@@ -291,12 +314,18 @@ export async function askLibraryAssistant(userInput, threadId,) {
     );
   }
 
-  // Optional but recommended: validate shape, not just JSON syntax.
-  // Example with zod:
-  // const result = ResponseSchema.safeParse(parsedAnswer);
-  // if (!result.success) {
-  //   throw new Error(`AI JSON failed schema validation: ${result.error.message}`);
-  // }
+  let validationResult;
+
+  // Validate the parsed answer against the expected schema
+  try {
+    validationResult = AssistantResponseSchema.parse(parsedAnswer);
+  } catch (validationError) {
+    throw new Error(
+      `AI returned JSON that does not match the expected schema: ${validationError.message}`
+    );
+  }
+
+  parsedAnswer = validationResult;
 
   const updatedMessages = [
     ...messages,
