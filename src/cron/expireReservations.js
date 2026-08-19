@@ -14,7 +14,6 @@ import { Book } from "../models/book-model.js";
 import { ReserveBook } from "../models/reserve-book.js";
 import User from "../models/user-auth-models.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
-import { broadcastReservationStats } from "../services/socket-service.js";
 
 const EXPIRY_FINE = 20;
 
@@ -70,10 +69,6 @@ const expireReservations = async () => {
           innerError
         );
       }
-    }
-
-    if (anyExpired) {
-      await broadcastReservationStats();
     }
   } catch (error) {
     console.error("[expireReservations] Cron job error:", error);

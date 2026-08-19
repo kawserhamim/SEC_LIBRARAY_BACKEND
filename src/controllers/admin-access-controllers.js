@@ -4,7 +4,6 @@ import { ReserveBook } from "../models/reserve-book.js";
 import { IssuedBook } from "../models/issuebook-model.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
 import { buildBookSearchFilter } from "../utils/book-search.js";
-import { broadcastOverdueStats, broadcastReservationStats } from "../services/socket-service.js";
 
 const ALLOWED_CATEGORIES = [
   "CSE",
@@ -536,13 +535,6 @@ export const issueReservedBook = async (req, res) => {
       reservation: reservation._id,
     });
 
-    broadcastReservationStats().catch((err) => {
-      console.error("Failed to broadcast reservation stats after issue:", err?.message);
-    });
-    broadcastOverdueStats().catch((err) => {
-      console.error("Failed to broadcast overdue stats after issue:", err?.message);
-    });
-
     return res.status(201).json({
       success: true,
       message: "Book issued successfully",
@@ -644,10 +636,6 @@ export const issueBookDirect = async (req, res) => {
       throw err;
     }
 
-    broadcastOverdueStats().catch((err) => {
-      console.error("Failed to broadcast overdue stats after direct issue:", err?.message);
-    });
-
     return res.status(201).json({
       success: true,
       message: "Book issued successfully (direct)",
@@ -683,10 +671,6 @@ export const returnIssuedBook = async (req, res) => {
     );
 
     enqueueWaitlistAvailability(issuedBook.book, 1);
-
-    broadcastOverdueStats().catch((err) => {
-      console.error("Failed to broadcast overdue stats after return:", err?.message);
-    });
 
     return res.status(200).json({
       success: true,
