@@ -68,7 +68,7 @@ export const loginAdminHandler = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Admin login successful",
-      data: { admin: publicAdmin(admin) },
+      data: { admin: publicAdmin(admin), token },
     });
   } catch (error) {
     return handleError(res, error, "admin login");

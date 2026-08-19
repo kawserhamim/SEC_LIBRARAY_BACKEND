@@ -30,7 +30,7 @@ export const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      data: { user: publicUser(user) },
+      data: { user: publicUser(user), token },
     });
   } catch (error) {
     return handleError(res, error, "login");
