@@ -272,15 +272,43 @@ export async function askLibraryAssistant(userInput, threadId,) {
   });
 
   const rawAnswer = completion.choices[0]?.message?.content || "";
+
+  // Only strip outer whitespace / markdown code fences — don't touch
+  // whitespace inside the JSON string values themselves.
   const answer = rawAnswer
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/```$/, "")
     .trim();
-  const updatedMessages = [...messages, { role: "assistant", content: answer }].slice(
-    -MAX_HISTORY_MESSAGES
-  );
+
+  let parsedAnswer;
+
+  try {
+    parsedAnswer = JSON.parse(answer);
+  } catch (error) {
+    throw new Error(
+      `AI returned invalid JSON: ${answer.slice(0, 200)}${answer.length > 200 ? "..." : ""}`
+    );
+  }
+
+  // Optional but recommended: validate shape, not just JSON syntax.
+  // Example with zod:
+  // const result = ResponseSchema.safeParse(parsedAnswer);
+  // if (!result.success) {
+  //   throw new Error(`AI JSON failed schema validation: ${result.error.message}`);
+  // }
+
+  const updatedMessages = [
+    ...messages,
+    // Store the assistant turn as a string, matching the shape the
+    // chat API expects for `content`. If you need the parsed object
+    // elsewhere, keep it separate rather than putting it in `content`.
+    { role: "assistant", content: answer },
+  ].slice(-MAX_HISTORY_MESSAGES);
+
   chatCache.set(cacheKey, updatedMessages);
-  return answer;
+
+  return parsedAnswer;
 }
 
 // ===============================
