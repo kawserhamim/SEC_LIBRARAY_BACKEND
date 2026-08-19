@@ -27,8 +27,8 @@ export function initSocket(httpServer) {
   ioInstance = new Server(httpServer, {
     cors: {
       origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps, curl, or same-origin)
-        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        // Allow requests with matching origin or no origin (e.g. mobile/curl)
+        if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true);
         } else {
           callback(new Error("Not allowed by CORS"));
@@ -60,7 +60,7 @@ export function initSocket(httpServer) {
       }
 
       const decoded = verifyAuthToken(token);
-      socket.user = decoded; // Contains id, role, etc.
+      socket.user = decoded; // Contains id, role, exp, etc.
       next();
     } catch (err) {
       console.warn("[WebSocket] Handshake auth failed:", err.message);
@@ -75,6 +75,24 @@ export function initSocket(httpServer) {
     if (!userId) {
       socket.disconnect(true);
       return;
+    }
+
+    // Enforce token lifecycle: auto-disconnect socket once JWT expires
+    let expiryTimer = null;
+    if (socket.user?.exp) {
+      const msUntilExpiry = socket.user.exp * 1000 - Date.now();
+      if (msUntilExpiry <= 0) {
+        console.warn(`[WebSocket] Token already expired for user ${userId}. Disconnecting.`);
+        socket.emit("auth:expired", { message: "Authentication token expired" });
+        socket.disconnect(true);
+        return;
+      }
+
+      expiryTimer = setTimeout(() => {
+        console.warn(`[WebSocket] Token expired for socket ${socket.id} (user ${userId}). Disconnecting.`);
+        socket.emit("auth:expired", { message: "Session token expired. Please re-authenticate." });
+        socket.disconnect(true);
+      }, msUntilExpiry);
     }
 
     const userRoom = `user:${userId}`;
@@ -111,6 +129,9 @@ export function initSocket(httpServer) {
     }
 
     socket.on("disconnect", (reason) => {
+      if (expiryTimer) {
+        clearTimeout(expiryTimer);
+      }
       console.log(`[WebSocket] User ${userId} disconnected (${reason})`);
     });
   });

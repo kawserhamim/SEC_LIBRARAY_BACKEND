@@ -612,20 +612,37 @@ export const issueBookDirect = async (req, res) => {
       return res.status(409).json({ success: false, message: "Borrowing limit (3) reached for this student" });
     }
 
-    book.availableCopies -= 1;
-    await book.save();
+    // Atomically decrement availableCopies if > 0
+    const updatedBook = await Book.findOneAndUpdate(
+      { _id: bookId, availableCopies: { $gt: 0 } },
+      { $inc: { availableCopies: -1 } },
+      { new: true }
+    );
 
-    const issuedBook = await IssuedBook.create({
-      book: book._id,
-      bookTitle: book.title,
-      bookAuthors: book.authors,
-      user: user._id,
-      userName: user.name,
-      userRegNo: user.regNo,
-      userDepartment: user.department,
-      userSession: user.Session,
-      reservation: null,
-    });
+    if (!updatedBook) {
+      return res.status(409).json({
+        success: false,
+        message: "No available copies left. Student should reserve or join the waitlist instead.",
+      });
+    }
+
+    let issuedBook;
+    try {
+      issuedBook = await IssuedBook.create({
+        book: updatedBook._id,
+        bookTitle: updatedBook.title,
+        bookAuthors: updatedBook.authors,
+        user: user._id,
+        userName: user.name,
+        userRegNo: user.regNo,
+        userDepartment: user.department,
+        userSession: user.Session,
+        reservation: null,
+      });
+    } catch (err) {
+      await Book.updateOne({ _id: bookId }, { $inc: { availableCopies: 1 } });
+      throw err;
+    }
 
     broadcastOverdueStats().catch((err) => {
       console.error("Failed to broadcast overdue stats after direct issue:", err?.message);
