@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, minlength: 2, maxlength: 100 },
     regNo: { type: String, required: true, unique: true, trim: true, index: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
-    phone: { type: String, required: false, unique: true, sparse: true, trim: true, index: true },
+    
     password: { type: String, required: false, select: false },
     gender: { type: String, required: true, enum: ["Male", "Female", "Hijra"] },
     department: { type: String, required: true, trim: true },
