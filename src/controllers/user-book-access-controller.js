@@ -5,6 +5,7 @@ import { IssuedBook } from "../models/issuebook-model.js";
 import { Waitlist } from "../models/waitlist-model.js";
 import User from "../models/user-auth-models.js";
 import { buildBookSearchFilter } from "../utils/book-search.js";
+import { broadcastReservationStats } from "../services/socket-service.js";
 
 // Pagination helper
 const getOffsetPagination = (query) => {
@@ -220,6 +221,11 @@ export const reserveBook = async (req, res) => {
       await Book.updateOne({ _id: bookId }, { $inc: { availableCopies: 1 } });
       throw err;
     }
+
+    // Notify admins in real-time about updated reservation counts
+    broadcastReservationStats().catch((err) => {
+      console.error("Failed to broadcast reservation stats after reserve:", err?.message);
+    });
 
     return res.status(201).json({
       success: true,

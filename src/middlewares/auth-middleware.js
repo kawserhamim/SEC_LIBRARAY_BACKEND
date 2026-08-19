@@ -2,12 +2,24 @@ import { verifyAuthToken, getAuthTokenFromCookie } from "../services/token-servi
 import User from "../models/user-auth-models.js";
 import TemporaryRegNo from "../models/TemporaryRegNo.js";
 
+/**
+ * Middleware: Authenticate Student / User
+ * 
+ * Flow:
+ * 1. Extracts JWT token from cookie or Authorization header.
+ * 2. Verifies token authenticity using JWT_ACCESS_SECRET.
+ * 3. Checks if user exists in the database.
+ * 4. Checks if registration number is blocked in TemporaryRegNo.
+ * 5. Attaches user profile object to req.user for downstream controllers.
+ */
 export async function authenticate(req, res, next) {
+  // Step 1: Extract JWT token
   const token = getAuthTokenFromCookie(req);
   if (!token) {
     return res.status(401).json({ success: false, message: "Authentication required" });
   }
 
+  // Step 2: Verify token signature
   let payload;
   try {
     payload = verifyAuthToken(token);

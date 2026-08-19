@@ -1,8 +1,20 @@
+/**
+ * Background Cron Job: Expire Unclaimed Book Reservations
+ * 
+ * Flow:
+ * 1. Finds pending reservations whose expiresAt timestamp is in the past.
+ * 2. Atomically marks status as 'expired'.
+ * 3. Restores +1 available copy to the Book catalog.
+ * 4. Adds fine to the student account.
+ * 5. Notifies the next student waiting on the waitlist.
+ */
+
 import cron from "node-cron";
 import { Book } from "../models/book-model.js";
 import { ReserveBook } from "../models/reserve-book.js";
 import User from "../models/user-auth-models.js";
 import { enqueueWaitlistAvailability } from "../queues/waitlist-queue.js";
+import { broadcastReservationStats } from "../services/socket-service.js";
 
 const EXPIRY_FINE = 20;
 
@@ -17,6 +29,7 @@ const expireReservations = async () => {
 
     console.log(`[expireReservations] Found ${expiredReservations.length} expired reservation(s)`);
 
+    let anyExpired = false;
     for (const reservation of expiredReservations) {
       try {
         // Atomically transition status from pending to expired so it is only processed once
@@ -30,6 +43,8 @@ const expireReservations = async () => {
           // Already issued or processed by another run
           continue;
         }
+
+        anyExpired = true;
 
         // Increase the book's available copies by 1
         const updatedBook = await Book.findByIdAndUpdate(
@@ -55,6 +70,10 @@ const expireReservations = async () => {
           innerError
         );
       }
+    }
+
+    if (anyExpired) {
+      await broadcastReservationStats();
     }
   } catch (error) {
     console.error("[expireReservations] Cron job error:", error);

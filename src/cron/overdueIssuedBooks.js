@@ -1,5 +1,14 @@
+/**
+ * Background Cron Job: Flag Overdue Issued Books
+ * 
+ * Flow:
+ * 1. Checks for books with status 'borrowed' whose dueDate is in the past.
+ * 2. Updates their status to 'overdue'.
+ */
+
 import cron from "node-cron";
 import { IssuedBook } from "../models/issuebook-model.js";
+import { broadcastOverdueStats } from "../services/socket-service.js";
 
 const markOverdueIssuedBooks = async () => {
   try {
@@ -12,6 +21,7 @@ const markOverdueIssuedBooks = async () => {
 
     console.log(`[markOverdueIssuedBooks] Found ${overdueBooks.length} overdue issued book(s)`);
 
+    let modified = false;
     for (const issued of overdueBooks) {
       try {
         const updated = await IssuedBook.updateOne(
@@ -20,6 +30,7 @@ const markOverdueIssuedBooks = async () => {
         );
 
         if (updated.modifiedCount > 0) {
+          modified = true;
           console.log(`[markOverdueIssuedBooks] Marked overdue: ${issued.issuedId}`);
         }
       } catch (innerError) {
@@ -28,6 +39,10 @@ const markOverdueIssuedBooks = async () => {
           innerError
         );
       }
+    }
+
+    if (modified) {
+      await broadcastOverdueStats();
     }
   } catch (error) {
     console.error("[markOverdueIssuedBooks] Cron job error:", error);

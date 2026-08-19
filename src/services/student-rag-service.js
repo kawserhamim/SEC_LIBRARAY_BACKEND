@@ -262,16 +262,15 @@ export async function askLibraryAssistant(userInput, threadId,) {
     throw new Error("Query input cannot be empty.");
   }
 
-  // Retrieve relevant book context
+  // Step 1: Retrieve relevant book context chunks from Qdrant vector database
   const contextChunks = await searchSimilarDocuments(query, 4);
 
-  // if (!contextChunks.length) {
-  //   return "No book in the database currently covers this topic.";
-  // }
+  // If no matching context is found, return the standard no_match object
   if (!contextChunks.length) {
-  return { type: "no_match", message: "No book in the database currently covers this topic." };
-}
+    return { type: "no_match", message: "No book in the database currently covers this topic." };
+  }
 
+  // Step 2: Assemble context text and retrieve conversation history
   const contextText = contextChunks.join("\n\n---\n\n");
   const oldMessages = chatCache.get(cacheKey) ?? [];
   const messages = [
@@ -281,19 +280,18 @@ export async function askLibraryAssistant(userInput, threadId,) {
       content: query,
     },
   ];
-  // Call Groq LLM
+
+  // Step 3: Call Groq LLM with system prompt, context, and conversation history
   const completion = await groq.chat.completions.create({
     model: GROQ_CHAT_MODEL,
     temperature: 0.2,
     messages: [
-
       {
         role: "system",
         content: `${SYSTEM_PROMPT}\n\n## Book Context:\n${contextText}`,
       },
-      ...messages
+      ...messages,
     ],
-
   });
 
   const rawAnswer = completion.choices[0]?.message?.content || "";

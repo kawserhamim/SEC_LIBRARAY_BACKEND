@@ -1,6 +1,7 @@
 import { Notification } from "../models/notification-model.js";
 import { Waitlist } from "../models/waitlist-model.js";
 import { Book } from "../models/book-model.js";
+import { emitToUser } from "./socket-service.js";
 
 export async function createBookAvailableNotification({
   userId,
@@ -14,7 +15,7 @@ export async function createBookAvailableNotification({
   const book = await Book.findById(bookId).select("title authors").lean();
   const bookTitle = book?.title || "your book";
 
-  return Notification.create({
+  const notification = await Notification.create({
     user: userId,
     type: "BOOK_AVAILABLE",
     title: `Book available: ${bookTitle}`,
@@ -28,6 +29,22 @@ export async function createBookAvailableNotification({
     userSession: userSession ?? null,
     read: false,
   });
+
+  // Emit real-time WebSocket events to the specific user's room
+  try {
+    emitToUser(userId, "notification:new", notification);
+    emitToUser(userId, "book:available", {
+      notificationId: notification._id,
+      bookId,
+      bookTitle,
+      message: notification.message,
+      createdAt: notification.createdAt,
+    });
+  } catch (socketErr) {
+    console.warn(`[Notification Service] Failed to emit socket notification to user ${userId}:`, socketErr.message);
+  }
+
+  return notification;
 }
 
 export async function triggerWaitlistAvailability(bookId, availableCopies = 1) {

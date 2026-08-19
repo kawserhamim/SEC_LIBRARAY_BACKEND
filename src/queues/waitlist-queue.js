@@ -1,7 +1,18 @@
+/**
+ * In-Memory Async Job Queue for Waitlist Notifications
+ * 
+ * Purpose:
+ * When books are returned, restocked, or reservations expire, notifying
+ * students on the waitlist takes time (DB queries, email, socket pushes).
+ * This queue processes those notifications asynchronously in the background
+ * without slowing down HTTP responses.
+ */
+
 const DEFAULT_CONCURRENCY = 4;
 const DEFAULT_MAX_RETRIES = 3;
 const DEFAULT_BASE_DELAY_MS = 500;
 
+// Track pending and actively running jobs by bookId -> copies
 const pending = new Map(); // bookId -> availableCopies
 const running = new Map(); // bookId -> availableCopies
 
@@ -12,6 +23,9 @@ let shuttingDown = false;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Execute a single notification job with exponential backoff retries
+ */
 async function runJob(bookId, availableCopies) {
   let attempt = 0;
 
@@ -34,6 +48,7 @@ async function runJob(bookId, availableCopies) {
         return;
       }
 
+      // Exponential backoff: 500ms -> 1000ms -> 2000ms
       const delay = baseDelayMs * 2 ** (attempt - 1);
       console.warn(
         `[waitlist-queue] Attempt ${attempt} failed for book ${bookId}; retrying in ${delay}ms`,

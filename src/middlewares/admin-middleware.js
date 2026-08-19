@@ -1,13 +1,18 @@
 import { verifyAuthToken, getAuthTokenFromCookie } from "../services/token-service.js";
 import Admin from "../models/admin-model.js";
 
+/**
+ * Middleware: Verify Admin Authentication & Role
+ */
 export function authenticateAdmin(req, res, next) {
+  // Step 1: Extract JWT token
   const token = getAuthTokenFromCookie(req);
   if (!token) {
     return res.status(401).json({ success: false, message: "Admin authentication required" });
   }
 
   try {
+    // Step 2: Verify token and check for 'admin' role
     const payload = verifyAuthToken(token);
     if (payload.role !== "admin") {
       return res.status(403).json({ success: false, message: "Admin access required" });
