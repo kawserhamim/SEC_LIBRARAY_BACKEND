@@ -28,7 +28,6 @@ const expireReservations = async () => {
 
     console.log(`[expireReservations] Found ${expiredReservations.length} expired reservation(s)`);
 
-    let anyExpired = false;
     for (const reservation of expiredReservations) {
       try {
         // Atomically transition status from pending to expired so it is only processed once
@@ -42,8 +41,6 @@ const expireReservations = async () => {
           // Already issued or processed by another run
           continue;
         }
-
-        anyExpired = true;
 
         // Increase the book's available copies by 1
         const updatedBook = await Book.findByIdAndUpdate(
