@@ -22,6 +22,10 @@ const transactionSchema = new mongoose.Schema(
       index: true,
     },
     gatewayResponse: { type: mongoose.Schema.Types.Mixed, default: null },
+    // Separate from `status` so a VALID transaction whose fine-decrement step
+    // failed (crash, transient DB error, etc.) can be safely retried later
+    // without re-validating with SSLCommerz or risking a double-decrement.
+    fineApplied: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

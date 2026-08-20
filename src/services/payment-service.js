@@ -80,48 +80,73 @@ export async function handleIpnValidation(body) {
   const { val_id, tran_id } = body || {};
   if (!val_id || !tran_id) return;
 
-  const transaction = await Transaction.findOne({ tran_id }).lean();
+  let transaction = await Transaction.findOne({ tran_id });
   if (!transaction) return;
-  if (transaction.status === "VALID") return;
 
-  const validation = await sslcz.validate({ val_id });
+  if (transaction.status !== "VALID") {
+    const validation = await sslcz.validate({ val_id });
 
-  const isValid =
-    (validation?.status === "VALID" || validation?.status === "VALIDATED") &&
-    validation?.tran_id === tran_id &&
-    Number(validation?.amount) === transaction.amount &&
-    validation?.currency === transaction.currency;
+    const isValid =
+      (validation?.status === "VALID" || validation?.status === "VALIDATED") &&
+      validation?.tran_id === tran_id &&
+      Number(validation?.amount) === transaction.amount &&
+      validation?.currency === transaction.currency;
 
-  if (!isValid) {
-    await Transaction.updateOne(
+    if (!isValid) {
+      await Transaction.updateOne(
+        { tran_id, status: { $ne: "VALID" } },
+        {
+          $set: {
+            val_id,
+            gatewayResponse: validation,
+            status: validation?.status === "FAILED" ? "FAILED" : transaction.status,
+          },
+        }
+      );
+      return;
+    }
+
+    // Atomic claim: only one concurrent IPN delivery for this tran_id can win
+    // the transition out of PENDING, so a duplicate/replayed IPN can't double-apply.
+    const claimed = await Transaction.findOneAndUpdate(
       { tran_id, status: { $ne: "VALID" } },
-      {
-        $set: {
-          val_id,
-          gatewayResponse: validation,
-          status: validation?.status === "FAILED" ? "FAILED" : transaction.status,
-        },
-      }
+      { $set: { status: "VALID", val_id, gatewayResponse: validation } },
+      { new: true }
     );
-    return;
+
+    // If claimed is null, a concurrent delivery already won that race — fall
+    // through to applyFineForTransaction below regardless, since that step
+    // is independently retryable and may not have completed yet either way.
+    transaction = claimed || (await Transaction.findOne({ tran_id }));
+    if (!transaction) return;
   }
 
-  // Atomic claim: only one concurrent IPN delivery for this tran_id can win
-  // the transition out of PENDING, so a duplicate/replayed IPN can't double-apply.
+  await applyFineForTransaction(transaction);
+}
+
+// Applies the fine decrement for an already-VALID transaction. Idempotent and
+// safe to call repeatedly or concurrently — only the caller that wins the
+// fineApplied claim actually touches the fine — so it can be retried later
+// (e.g. from getMyPaymentStatus) if this step previously failed without
+// re-validating with SSLCommerz or risking a double-decrement.
+async function applyFineForTransaction(transaction) {
+  if (transaction.status !== "VALID" || transaction.fineApplied) return;
+
   const claimed = await Transaction.findOneAndUpdate(
-    { tran_id, status: { $ne: "VALID" } },
-    { $set: { status: "VALID", val_id, gatewayResponse: validation } },
+    { _id: transaction._id, status: "VALID", fineApplied: { $ne: true } },
+    { $set: { fineApplied: true } },
     { new: true }
   );
 
   if (!claimed) return;
 
   // Atomic, pipeline-based update: clamps at 0 and never collides with the
-  // cron job's concurrent $inc on the same fine field.
+  // cron job's concurrent $inc on the same fine field. Requires
+  // `updatePipeline: true` for Mongoose to accept an array update.
   const updatedUser = await User.findOneAndUpdate(
     { _id: claimed.user },
     [{ $set: { fine: { $max: [{ $subtract: [{ $ifNull: ["$fine", 0] }, claimed.amount] }, 0] } } }],
-    { new: true }
+    { new: true, updatePipeline: true }
   );
 
   if (updatedUser) {
@@ -147,7 +172,19 @@ export async function getMyPaymentHistory(userId, query = {}) {
 }
 
 export async function getMyPaymentStatus(userId, tran_id) {
-  return Transaction.findOne({ user: userId, tran_id }).lean();
+  const transaction = await Transaction.findOne({ user: userId, tran_id });
+  if (!transaction) return null;
+
+  // Self-heals a VALID transaction whose fine-application step previously
+  // failed — the payment-result page polls this endpoint right after
+  // checkout, so a stuck payment recovers on its own the next time it's
+  // checked, with no manual intervention needed.
+  if (transaction.status === "VALID" && !transaction.fineApplied) {
+    await applyFineForTransaction(transaction);
+    return Transaction.findOne({ user: userId, tran_id }).lean();
+  }
+
+  return transaction.toObject();
 }
 
 export async function getAllPaymentsForAdmin(query = {}) {
