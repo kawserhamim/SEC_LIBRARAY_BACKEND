@@ -30,6 +30,21 @@ export async function createBookAvailableNotification({
   });
 }
 
+export async function createFineClearedNotification({ userId, userName, userRegNo, amount }) {
+  const notification = await Notification.create({
+    user: userId,
+    type: "FINE_CLEARED",
+    title: "Fine cleared",
+    message: `Your library fine of ৳${amount} has been cleared. Thank you for your payment.`,
+    relatedId: null,
+    userName: userName ?? null,
+    userRegNo: userRegNo ?? null,
+    read: false,
+  });
+
+  return notification;
+}
+
 export async function triggerWaitlistAvailability(bookId, availableCopies = 1) {
   if (!bookId) return null;
 

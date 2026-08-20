@@ -33,6 +33,7 @@
     "node-cron": "^4.6.0",
     "nodemailer": "^9.0.5",
     "qdrant-client": "^0.0.1",
+    "sslcommerz-lts": "^1.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

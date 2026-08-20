@@ -15,7 +15,7 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ["BOOK_AVAILABLE", "RESERVATION_EXPIRED", "DUE_REMINDER", "GENERAL"],
+      enum: ["BOOK_AVAILABLE", "RESERVATION_EXPIRED", "DUE_REMINDER", "FINE_CLEARED", "GENERAL"],
       default: "GENERAL",
       index: true,
     },
