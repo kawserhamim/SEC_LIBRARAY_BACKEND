@@ -36,16 +36,24 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with matching origin or no origin (e.g. mobile/curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+  cors((req, callback) => {
+    // SSLCommerz's IPN/success/fail/cancel callbacks come from SSLCommerz's own
+    // servers and the customer's browser mid-redirect, with an Origin header
+    // that will never be in allowedOrigins — and they don't use cookies, so the
+    // origin allowlist doesn't apply to them at all.
+    if (req.path.startsWith("/api/payment/")) {
+      return callback(null, { origin: true, credentials: false });
+    }
+
+    // Allow requests with a matching origin or no origin (e.g. mobile/curl).
+    // A non-matching origin gets no CORS headers (browser blocks reading the
+    // response) rather than a thrown error, so a stray/unexpected Origin
+    // header can't crash the request with a 500.
+    const origin = req.header("Origin");
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, { origin: true, credentials: true });
+    }
+    return callback(null, { origin: false });
   })
 );
 
