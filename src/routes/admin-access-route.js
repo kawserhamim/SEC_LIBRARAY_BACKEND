@@ -30,6 +30,7 @@ import {
   updateResearchPaper,
   deleteResearchPaper,
 } from "../controllers/research-paper-controller.js";
+import { getAllPaymentsHandler } from "../controllers/admin-payment-controller.js";
 import { authenticateAdmin } from "../middlewares/admin-middleware.js";
 
 const router = Router();
@@ -76,5 +77,8 @@ router.post("/research-papers/pending/:id/reject", rejectResearchPaper);
 router.post("/research-papers/reject/:id", rejectResearchPaper);
 router.patch("/research-papers/:id", updateResearchPaper);
 router.delete("/research-papers/:id", deleteResearchPaper);
+
+// Payments (fine clearance via SSLCommerz) — read-only audit view
+router.get("/payments", getAllPaymentsHandler);
 
 export default router;

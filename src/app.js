@@ -12,6 +12,8 @@ import userBookAccessRoutes from "./routes/user-book-access-route.js";
 import notificationRoutes from "./routes/notification-routes.js";
 import studentRagRoutes from "./routes/student-rag-routes.js";
 import { upload } from "./controllers/student-rag-controller.js";
+import paymentRoutes from "./routes/payment-routes.js";
+import studentPaymentRoutes from "./routes/student-payment-routes.js";
 
 const app = express();
 
@@ -76,6 +78,8 @@ app.use("/api/main/student", studentAuthenticationRoutes);
 app.use("/api/student/access", userBookAccessRoutes);
 app.use("/api/student/rag", studentRagRoutes);
 app.use("/api/student", notificationRoutes);
+app.use("/api/student/payment", studentPaymentRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // ==========================================
 // 7. 404 Catch-all Fallback Handler
