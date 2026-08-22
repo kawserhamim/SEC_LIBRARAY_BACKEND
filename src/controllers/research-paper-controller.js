@@ -245,25 +245,28 @@ export const getMyResearchPapers = async (req, res) => {
   }
 };
 
-// Public / Student: Get all approved papers (+ user's own papers if logged in)
+// Public / Student: Get all approved research papers
 export const getAllResearchPapers = async (req, res) => {
   try {
     const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit) || 10, 1),
+      100
+    );
+
     const skip = (page - 1) * limit;
 
-    const userId = req.user?.id || req.user?._id;
-    let filter = { isPublished: true, status: "approved" };
-
-    if (userId) {
-      filter = {
-        isPublished: true,
-        $or: [{ status: "approved" }, { "submittedBy.userId": userId }],
-      };
-    }
+    const filter = {
+      status: "approved",
+    };
 
     const [papers, totalPapers] = await Promise.all([
-      ResearchPaper.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ResearchPaper.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
       ResearchPaper.countDocuments(filter),
     ]);
 
@@ -283,6 +286,7 @@ export const getAllResearchPapers = async (req, res) => {
     });
   } catch (error) {
     console.error("Get all research papers error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Failed to fetch research papers",
